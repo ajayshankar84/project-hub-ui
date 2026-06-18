@@ -1,0 +1,29 @@
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.page-link {
+  // Smooth transition for all properties
+  transition: all 0.2s ease-in-out;
+
+  // Hover effect for standard (inactive) buttons
+  &:hover:not(.active-nav-gradient):not(.bg-transparent) {
+    background-color: #eeeeee !important; 
+    color: #5932EA !important; // Highlighting with primary brand color
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  // Hover effect for the active page button
+  &.active-nav-gradient:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(89, 50, 234, 0.35) !important;
+  }
+}
+
+// Reset transform for disabled buttons
+.page-item.disabled .page-link {
+  pointer-events: none;
+  opacity: 0.6;
+}

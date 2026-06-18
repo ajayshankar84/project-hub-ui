@@ -1,0 +1,251 @@
+﻿.login-container {
+    max-width: 1120px;
+    margin: 2rem auto;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+}
+
+.brand-section {
+    flex: 1 1 320px;
+    padding: 2rem;
+    background: linear-gradient(135deg, #0a1f44, #153a72);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 1.6rem;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logo-text span {
+    color: #b4e6ff;
+}
+
+.hero-message h2 {
+    font-size: 2rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.hero-message p {
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+}
+
+.testimonial {
+    margin-top: 1.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
+}
+
+.testimonial-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #4a90e2;
+}
+
+.form-section {
+    flex: 1 1 320px;
+    padding: 2rem;
+    background: #fff;
+}
+
+.form-header h1 {
+    margin-bottom: 0.35rem;
+    font-size: 1.8rem;
+}
+
+.form-header p {
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.theme-switch-login {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.theme-switch-group {
+    display: flex;
+    gap: 0.4rem;
+    background: #f1f5f9;
+    border-radius: 999px;
+    padding: 0.2rem;
+}
+
+.theme-option {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+    font-weight: 700;
+}
+
+.theme-option.active-mode {
+    background: #4a90e2;
+    color: #fff;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.input-field {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid #dbe3ef;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+}
+
+.input-field input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.input-field.invalid {
+    border-color: #ef4444;
+}
+
+.input-error {
+    display: block;
+    color: #ef4444;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+}
+
+.options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.checkbox-label {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.forgot-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.login-btn {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 0.95rem;
+    background: linear-gradient(90deg, #4a90e2, #3b82f6);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.2rem 0;
+    color: #64748b;
+}
+
+.separator hr {
+    flex: 1;
+    border: 0;
+    border-top: 1px solid #dbe3ef;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.social-btn {
+    flex: 1;
+    text-align: center;
+    border-radius: 12px;
+    border: 1px solid #dbe3ef;
+    padding: 0.8rem;
+    background: #f8fafc;
+}
+
+.signup-prompt {
+    text-align: center;
+    color: #475569;
+}
+
+.signup-prompt a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}

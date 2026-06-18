@@ -1,0 +1,95 @@
+.account-page {
+    min-height: 100vh;
+    background: radial-gradient(circle at top left, rgba(74, 144, 226, 0.12), transparent 20%), linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+    .account-shell {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        box-shadow: var(--shadow-card);
+        animation: fadeSlideUp 0.4s ease-out;
+    }
+    .brand-panel {
+        background: linear-gradient(135deg, rgba(10, 31, 68, 0.95), rgba(19, 45, 94, 0.9));
+        .logo-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 1rem;
+            display: grid;
+            place-items: center;
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .testimonial-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #4a90e2;
+            color: #fff;
+            font-weight: 700;
+        }
+    }
+    .form-panel {
+        .input-group-text {
+            background: var(--input-bg);
+            border-color: var(--card-border);
+            color: var(--text-secondary);
+        }
+        .form-control,
+        .form-select {
+            border-color: var(--card-border);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            &:focus {
+                border-color: var(--accent-start);
+                box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.2);
+                background: var(--card-bg);
+            }
+        }
+        .is-invalid {
+            border-color: #dc3545;
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.2);
+            }
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.85rem;
+        }
+        .progress {
+            background: rgba(15, 23, 42, 0.08);
+        }
+        .form-check-input:checked {
+            background-color: var(--accent-start);
+            border-color: var(--accent-start);
+        }
+    }
+    @media (max-width: 991.98px) {
+        .brand-panel {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+    }
+    @media (max-width: 575.98px) {
+        .brand-panel,
+        .form-panel {
+            padding: 1.5rem !important;
+        }
+    }
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

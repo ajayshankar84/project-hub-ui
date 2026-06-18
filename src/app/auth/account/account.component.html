@@ -1,0 +1,181 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-surface-bright p-3">
+    <!-- Main Account Creation Card -->
+    <div class="glass-card rounded-40 shadow-lg p-4 p-md-5 w-100" style="max-width: 450px;">
+        <div class="text-center mb-5">
+            <div class="stats-icon rounded-circle bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                <i class="bi bi-person-plus-fill fs-1"></i>
+            </div>
+            <h1 class="font-h1 text-on-surface fw-bold mb-1">Create Your Account</h1>
+            <p class="text-text-secondary small">Join our insurance portal today</p>
+        </div>
+
+        @if (submissionMessage) {
+            <div class="alert alert-danger rounded-xl border-0 small d-flex align-items-center gap-2 mb-4 animate-fade-in">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ submissionMessage }}
+            </div>
+        }
+
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="row g-3">
+                <!-- First Name Input -->
+                <div class="col-md-6">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="firstName">First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text" 
+                               id="firstName" 
+                               formControlName="firstName" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="Alex" />
+                    </div>
+                    @if (submitted && f['firstName'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['firstName'].errors?.['required']) { First name is required. }
+                            @else { Use at least 2 characters. }
+                        </div>
+                    }
+                </div>
+
+                <!-- Last Name Input -->
+                <div class="col-md-6">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="lastName">Last Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text" 
+                               id="lastName" 
+                               formControlName="lastName" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="Johnson" />
+                    </div>
+                    @if (submitted && f['lastName'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['lastName'].errors?.['required']) { Last name is required. }
+                            @else { Use at least 2 characters. }
+                        </div>
+                    }
+                </div>
+
+                <!-- Email Input -->
+                <div class="col-12">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="email">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" 
+                               id="email" 
+                               formControlName="email" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="alex@example.com" />
+                    </div>
+                    @if (submitted && f['email'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['email'].errors?.['required']) { Email is required. }
+                            @else { Enter a valid email address. }
+                        </div>
+                    }
+                </div>
+
+                <!-- Mobile Input -->
+                <div class="col-12">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="mobile">Mobile Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-phone"></i>
+                        </span>
+                        <input type="tel" 
+                               id="mobile" 
+                               formControlName="mobile" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="9876543210" 
+                               inputmode="numeric" 
+                               maxlength="10" 
+                               autocomplete="tel" />
+                    </div>
+                    @if (submitted && f['mobile'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['mobile'].errors?.['required']) { Mobile number is required. }
+                            @else { Enter a valid 10-digit number. }
+                        </div>
+                    }
+                </div>
+
+                <!-- Password Input -->
+                <div class="col-12">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="password">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" 
+                               id="password" 
+                               formControlName="password" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="Create a strong password" />
+                    </div>
+                    @if (submitted && f['password'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['password'].errors?.['required']) { Password is required. }
+                            @else { Use at least 8 characters. }
+                        </div>
+                    }
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-between small text-text-muted mb-1">
+                            <span>Password strength</span>
+                            <span class="fw-semibold">{{ strengthText }}</span>
+                        </div>
+                        <div class="progress" style="height: 6px">
+                            <div class="progress-bar {{ strengthClass }}" role="progressbar" [style.width.%]="strengthPercent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Input -->
+                <div class="col-12">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="confirmPassword">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-check-circle"></i>
+                        </span>
+                        <input type="password" 
+                               id="confirmPassword" 
+                               formControlName="confirmPassword" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="Confirm your password" />
+                    </div>
+                    @if (submitted && f['confirmPassword'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            Confirm your password.
+                        </div>
+                    }
+                    @if (submitted && accountForm.errors?.['passwordMismatch']) {
+                        <div class="text-danger small mt-1 ms-2">
+                            Passwords do not match.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <button type="submit" 
+                    class="btn btn-primary w-100 rounded-pill py-3 font-bold shadow-sm d-flex align-items-center justify-content-center gap-2 mt-4" 
+                    [disabled]="accountForm.invalid || isSubmitting">
+                <span *ngIf="!isSubmitting">Create free account</span>
+                <div *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"></div>
+                <i *ngIf="!isSubmitting" class="bi bi-arrow-right fs-5"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-5">
+            <p class="text-text-muted small">
+                Already have an account? 
+                <a [routerLink]="['/auth/login']" class="text-primary fw-bold text-decoration-none">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+/* Document Detail Dashboard Styles */
+.document-detail-wrapper {
+    background-color: var(--background);
+    min-height: 100vh;
+    padding-bottom: var(--page-gutter);
+}
+
+.glass-card {
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    box-shadow: 0px 10px 60px rgba(226, 236, 249, 0.5);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 15px 70px rgba(226, 236, 249, 0.6);
+    }
+
+    .table {
+        tbody tr {
+            transition: background-color 0.2s ease;
+            &:hover {
+                background-color: var(--surface-container-low);
+            }
+        }
+    }
+}
+
+.rounded-2xl {
+    border-radius: 1rem !important;
+}
+
+.bg-surface-bright {
+    background-color: var(--surface-bright) !important;
+}
+
+.message-bubble {
+    max-width: 85%;
+    word-wrap: break-word;
+
+    &.received {
+        background-color: var(--surface-container-low);
+        border: 1px solid var(--border);
+        border-top-left-radius: 0 !important;
+    }
+
+    &.sent {
+        background-color: var(--primary);
+        color: white;
+        border-top-right-radius: 0 !important;
+    }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--surface-container-highest);
+    border-radius: 10px;
+}
+
+.rounded-30 { border-radius: var(--radius-30); }
+.rounded-xl { border-radius: var(--radius-xl); }
+
+.stats-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    span { font-size: 28px; }
+}
+
+.btn-icon-round {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    
+    &:hover {
+        background-color: var(--surface-container-high);
+        color: var(--primary);
+    }
+
+    &.text-danger:hover {
+        color: var(--danger) !important;
+    }
+}
+
+.modal-xl {
+    --bs-modal-width: 90vw; /* Adjust as needed for extra large modal */
+}

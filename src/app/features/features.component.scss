@@ -1,0 +1,220 @@
+$sidebar-width: 260px;
+$sidebar-collapsed-width: 0px; // Set to 80px if you want a mini-sidebar
+$navbar-height: 70px;
+$primary-color: #0dcaf0;
+$dark-bg: #1e293b;
+.admin-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f8fafc;
+    overflow: hidden;
+    &.sidebar-collapsed {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+        .main-content {
+            margin-left: 0;
+        }
+        .top-navbar {
+            left: 0;
+        }
+    }
+    &.user-layout {
+        .top-navbar {
+            left: 0;
+        }
+        .main-content {
+            margin-left: 0;
+        }
+    }
+}
+
+.top-navbar {
+    height: $navbar-height;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: $sidebar-width;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #e2e8f0;
+    .toggle-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        color: $dark-bg;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        &:hover {
+            background: #e2e8f0;
+        }
+    }
+}
+
+.nav-link-custom {
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: 0.2s;
+    &:hover { background: #f1f5f9; color: $primary-color; }
+    &.active-link {
+        color: $primary-color;
+        background: #f0f9ff;
+    }
+}
+
+.sidebar {
+    width: $sidebar-width;
+    height: 100vh;
+    background: $dark-bg;
+    color: #94a3b8;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    transition: transform 0.3s ease;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    /* Chrome, Edge, Safari */
+    &::-webkit-scrollbar {
+        width: 6px;
+        display: block;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $dark-bg;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $primary-color;
+        border-radius: 10px;
+    }
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: $primary-color $dark-bg;
+
+    .nav-menu {
+        padding: 1rem;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.25rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s ease, background-color 0.2s ease; // Explicitly define transitions
+            i {
+                font-size: 1.25rem;
+                margin-right: 1rem;
+            }
+            span {
+                font-weight: 500;
+            }
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: $primary-color; // Using brand primary color for hover text
+            }
+            &.active {
+                background: $primary-color;
+                color: $dark-bg;
+                box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+            }
+        }
+        .nav-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1.5rem 0;
+        }
+    }
+}
+
+.main-content {
+    margin-top: $navbar-height;
+    margin-left: $sidebar-width;
+    height: calc(100vh - #{$navbar-height});
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    
+    &.px-2 {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .content-wrapper {
+        min-height: 100%;
+        border: 1px solid #f1f5f9;
+    }
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    background: $primary-color;
+    color: $dark-bg;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+// Media Queries for Mobile Responsiveness
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    .top-navbar {
+        left: 0 !important;
+    }
+    .admin-wrapper:not(.sidebar-collapsed) {
+        .sidebar {
+            transform: translateX(0);
+        }
+    }
+    .main-content {
+        &.py-4 {
+            padding-top: 1.5rem !important;
+        }
+    }
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+// Brand Gradient Tokens
+.active-nav-gradient {
+    background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 12%) 100%) !important;
+}
+
+.pro-card-gradient {
+    background: linear-gradient(135deg, $dark-bg 0%, darken($primary-color, 15%) 100%);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.rounded-30 {
+    border-radius: 30px !important;
+}
