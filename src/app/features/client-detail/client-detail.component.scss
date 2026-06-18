@@ -27,6 +27,18 @@
     }
 }
 
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+    &.text-bg-primary { box-shadow: 0 4px 12px rgba(13, 110, 253, 0.35); }
+    &.text-bg-success { box-shadow: 0 4px 12px rgba(25, 135, 84, 0.35); }
+    &.text-bg-warning { box-shadow: 0 4px 12px rgba(255, 193, 7, 0.35); }
+    &.text-bg-danger { box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35); }
+    &.text-bg-secondary { box-shadow: 0 4px 12px rgba(108, 117, 125, 0.35); }
+}
+
 .rounded-2xl {
     border-radius: 1rem !important;
 }

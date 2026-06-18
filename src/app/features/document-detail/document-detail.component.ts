@@ -7,6 +7,7 @@ import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { API_BASE_URL } from '../../core/config/api.config';
 import { CustomerService } from '../../core/services/customer.service';
 import { DocumentService } from '../../core/services/document.service';
+import { ProjectService ,Project} from '../../core/services/project.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ChatService, ChatMessage, DocumentStatusChange } from '../../core/services/chat.service';
 import { AuthService } from '../../core/services/auth.service'; // your auth service
@@ -39,6 +40,18 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   reviewedFiles = 0;
   pendingFiles = 0;
   selectedStatus: string = ''; // To hold the status selected in the view modal
+  projects: Project[] = []; // To store projects for the current customer
+  
+
+  isEditProjectModalOpen = false;
+  currentEditingProject: Project | null = null;
+  selectedProjectStatus = '';
+
+  isProjectModalOpen = false;
+  projectForm = {
+    projectName: '',
+    dueDate: ''
+  };
 
   isUploadModalOpen = false;
   currentUploadedSize = '';
@@ -75,6 +88,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private el: ElementRef,
     private chatService: ChatService,
+    private projectService: ProjectService,
     private authService: AuthService,
     private ngZone: NgZone
   ) { }
@@ -88,7 +102,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.fetchCustomerDetails(id);
+        this.fetchCustomerDetails(id);    
+        this.fetchProjects(id); // Fetch projects when customer details are loaded
         this.initChat(id);
       }
     });
@@ -157,6 +172,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       error: (err) => console.error('Error fetching documents:', err)
     });
   }
+
+  fetchProjects(customerId: string): void {
+    this.projectService.getProjectsByCustomerId(customerId).subscribe({
+      next: (res: Project[]) => {
+        this.projects = res;
+      },
+      error: (err:any) => console.error('Error fetching projects:', err)
+    });
+  }
+
 
   updateStats() {
     this.totalFiles = this.documents.length;
@@ -282,6 +307,68 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.filePreviewUrl = null;
     }
     this.isViewModalOpen = true;
+  }
+
+  openProjectModal() {
+    this.isProjectModalOpen = true;
+    this.projectForm = { projectName: '', dueDate: '' };
+  }
+
+  closeProjectModal() {
+    this.isProjectModalOpen = false;
+  }
+
+  openEditProjectModal(project: Project) {
+    this.currentEditingProject = project;
+    this.selectedProjectStatus = project.status || 'pending';
+    this.isEditProjectModalOpen = true;
+  }
+
+  closeEditProjectModal() {
+    this.isEditProjectModalOpen = false;
+    this.currentEditingProject = null;
+  }
+
+  confirmUpdateProjectStatus() {
+    if (!this.currentEditingProject?._id) return;
+    this.projectService.updateProjectStatus(this.currentEditingProject._id, this.selectedProjectStatus).subscribe({
+      next: () => {
+        this.showToast('Project status updated successfully', 'success');
+        this.fetchProjects(this.customer._id);
+        this.closeEditProjectModal();
+      },
+      error: (err) => {
+        console.error(err);
+        this.showToast('Failed to update project status', 'danger');
+      }
+    });
+  }
+
+  confirmAddProject(): void {
+    if (!this.projectForm.projectName || !this.projectForm.dueDate || !this.customer?._id) {
+      this.showToast('Please fill all project details.', 'danger');
+      return;
+    }
+
+    const newProject: any = {
+      projectName: this.projectForm.projectName,
+      dueDate: this.projectForm.dueDate,
+      customerId: this.customer._id.toString(),
+      status: 'pending' // Default status
+    };
+
+    this.projectService.createProject(newProject).subscribe({
+      next: (project:any) => {
+        this.showToast('Project added successfully', 'success');
+        this.closeProjectModal();
+        this.fetchProjects(this.customer._id.toString()); // Refresh project list
+        
+      },
+      error: (err:any) => {
+        console.error('Error adding project:', err);
+        this.showToast('Failed to add project', 'danger');
+      }
+    });
   }
 
   closeViewModal() {

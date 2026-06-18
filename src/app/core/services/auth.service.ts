@@ -7,6 +7,7 @@ import { SessionService } from './session.service';
 export type UserRole = 'user' | 'admin';
 
 export interface User {
+  id?: string;
   _id?: string;
   email: string;
   firstName: string;

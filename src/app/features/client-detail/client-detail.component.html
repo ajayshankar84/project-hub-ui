@@ -1,194 +1,291 @@
 <div class="document-detail-wrapper container">
     <!-- Toast Notification -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-        <div class="toast align-items-center border-0 shadow-lg" 
-             [class.show]="toastVisible" 
-             [class.bg-success]="toastVariant === 'success'" 
-             [class.bg-danger]="toastVariant === 'danger'"
-             role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast align-items-center border-0 shadow-lg" [class.show]="toastVisible"
+            [class.bg-success]="toastVariant === 'success'" [class.bg-danger]="toastVariant === 'danger'" role="alert"
+            aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body text-white">
-                    <i class="bi me-2" [class.bi-check-circle]="toastVariant === 'success'" [class.bi-exclamation-circle]="toastVariant === 'danger'"></i>
+                    <i class="bi me-2" [class.bi-check-circle]="toastVariant === 'success'"
+                        [class.bi-exclamation-circle]="toastVariant === 'danger'"></i>
                     {{ toastMessage }}
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="toastVisible = false"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    (click)="toastVisible = false"></button>
             </div>
         </div>
     </div>
 
     <!-- Customer Profile Header -->
-    <div class="d-flex align-items-center gap-3 gap-md-4 mb-4 pt-3">
-        <button (click)="goBack()" class="btn btn-icon-round bg-white shadow-sm border-0 flex-shrink-0" title="Back to Customers">
-            <i class="bi bi-arrow-left fs-5"></i>
-        </button>
-        
-        <div class="glass-card flex-grow-1 p-3 px-4 rounded-30 border shadow-sm d-flex align-items-center gap-3 gap-md-4">
-            <div class="stats-icon rounded-circle bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 64px; height: 64px; font-size: 1.5rem;">
-                {{ getInitials(customer?.name) }}
-            </div>
-            <div class="overflow-hidden">
-                <h2 class="font-h1 text-on-surface mb-1 text-truncate">{{ customer?.name || (isLoading ? 'Loading Customer...' : 'Unknown Customer') }}</h2>
-                <div class="d-flex flex-wrap gap-3 gap-md-4 text-text-secondary small">
-                    <span class="d-flex align-items-center gap-2"><i class="bi bi-envelope text-primary"></i>{{ customer?.email || 'N/A' }}</span>
-                    <span class="d-flex align-items-center gap-2"><i class="bi bi-telephone text-primary"></i>{{ customer?.mobile || 'N/A' }}</span>
-                    <span class="d-none d-md-inline-block text-text-muted opacity-75">|</span>
-                    <span class="text-text-muted">ID: <span class="font-monospace">{{ customer?._id || customer?.id || 'N/A' }}</span></span>
+    <div class="d-flex align-items-center justify-content-between gap-2 mb-4 pt-3">
+        <div class="d-flex align-items-center gap-2 gap-md-4 overflow-hidden flex-grow-1 pe-md-3">
+            <!-- <button (click)="goBack()" class="btn btn-icon-round bg-white shadow-sm border-0 flex-shrink-0" title="Back to Customers" data-bs-dismiss="offcanvas" data-bs-target="#chatSidebar">
+                <i class="bi bi-arrow-left fs-5"></i>
+            </button> -->
+
+            <!-- <div
+                class="glass-card flex-grow-1 p-2 p-md-3 px-3 px-md-4 rounded-30 border shadow-sm d-flex align-items-center gap-2 gap-md-3 overflow-hidden">
+                <div class="stats-icon rounded-circle bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width: 40px; height: 40px; font-size: 1rem;">
+                    {{ getInitials(customer?.name) }}
                 </div>
-            </div>
+                <div class="overflow-hidden">
+                    <h2 class="font-h1 text-on-surface mb-0 text-truncate fs-5 fs-md-3">{{ customer?.name || (isLoading
+                        ? 'Loading...' : 'Unknown') }}</h2>
+                    <div class="d-flex flex-wrap gap-2 text-text-secondary small d-none d-sm-flex">
+                        <span class="d-flex align-items-center gap-1"><i class="bi bi-envelope text-primary"></i>{{
+                            customer?.email || 'N/A' }}</span>
+                    </div>
+                </div>
+            </div> -->
         </div>
+
+        <!-- Hamburger for Chat (Visible only on Mobile/Tablet) -->
+        <button class="btn btn-icon-round bg-primary text-white shadow-sm border-0 d-lg-none flex-shrink-0"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#chatSidebar" aria-controls="chatSidebar">
+            <i class="bi bi-chat-dots fs-5"></i>
+        </button>
     </div>
 
-    <div class="row g-4 mb-4 pt-4">
-        <!-- Statistics Cards -->
-        <div class="col-md-4">
-            <div class="glass-card p-4 rounded-30 d-flex align-items-center gap-3 border shadow-sm">
+    <div class="row g-3 mb-4 pt-2">
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 p-md-4 rounded-30 d-flex align-items-center gap-2 gap-md-3 border shadow-sm">
                 <div class="stats-icon rounded-xl bg-primary-fixed-dim text-primary">
                     <i class="bi bi-folder"></i>
                 </div>
-                <div>
+                <div class="overflow-hidden">
                     <p class="text-label-sm text-text-secondary mb-0">Total Files</p>
-                    <h3 class="font-h1 text-on-surface mb-0">{{ totalFiles }}</h3>
+                    <h3 class="font-h1 text-on-surface mb-0 fs-5 fs-md-3">{{ totalFiles }}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="glass-card p-4 rounded-30 d-flex align-items-center gap-3 border shadow-sm">
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 p-md-4 rounded-30 d-flex align-items-center gap-2 gap-md-3 border shadow-sm">
                 <div class="stats-icon rounded-xl bg-secondary-container text-on-secondary-container">
                     <i class="bi bi-patch-check"></i>
                 </div>
-                <div>
+                <div class="overflow-hidden">
                     <p class="text-label-sm text-text-secondary mb-0">Reviewed Files</p>
-                    <h3 class="font-h1 text-on-surface mb-0">{{ reviewedFiles }}</h3>
+                    <h3 class="font-h1 text-on-surface mb-0 fs-5 fs-md-3">{{ reviewedFiles }}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="glass-card p-4 rounded-30 d-flex align-items-center gap-3 border shadow-sm">
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-3 p-md-4 rounded-30 d-flex align-items-center gap-2 gap-md-3 border shadow-sm">
                 <div class="stats-icon rounded-xl bg-tertiary-fixed text-on-tertiary-fixed">
                     <i class="bi bi-clock-history"></i>
                 </div>
-                <div>
+                <div class="overflow-hidden">
                     <p class="text-label-sm text-text-secondary mb-0">Pending Files</p>
-                    <h3 class="font-h1 text-on-surface mb-0">{{ pendingFiles }}</h3>
+                    <h3 class="font-h1 text-on-surface mb-0 fs-5 fs-md-3">{{ pendingFiles }}</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-8">
             <div class="glass-card rounded-30 overflow-hidden shadow-sm h-100">
-                <div class="p-4 border-bottom border-light d-flex justify-content-between align-items-center">
-                    <h3 class="font-h2 text-primary mb-0">Customer Documents</h3>
-                    <button (click)="openUploadModal()" class="btn btn-primary rounded-pill btn-sm px-3 d-flex align-items-center gap-2">
+                <div class="p-2 border-bottom border-light d-flex justify-content-between align-items-center bg-white">
+                    <h3 class="font-h2 text-primary mb-0 fs-5">Customer Documents</h3>
+                    <button (click)="openUploadModal()"
+                        class="btn btn-primary rounded-pill btn-sm px-2 px-md-3 d-flex align-items-center gap-2">
                         <i class="bi bi-plus-lg fs-6"></i>
-                        <span>Add New</span>
+                        <span class="d-none d-sm-inline">Add New</span>
                     </button>
                 </div>
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-md-block">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr class="text-text-secondary small">
                                 <th class="px-4 py-3 border-0">Document</th>
-                                <th class="py-3 border-0">Date</th>
-                                <th class="py-3 border-0">File</th>                                
-                                <th class="py-3 border-0">Send By</th>
-                                <th class="py-3 border-0 text-center">Status</th> 
+                                <th class="py-3 border-0 d-none d-lg-table-cell">Date</th>
+                                <th class="py-3 border-0 d-none d-md-table-cell">Sender</th>
+                                <th class="py-3 border-0 text-center">Status</th>
                                 <th class="px-4 py-3 border-0 text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-base">
                             @if (documents.length > 0) {
-                                @for (doc of documents; track doc._id) {
-                                <tr  [class.bg-light]="previewFileName === (doc.docTitle || doc.documentPath)" style="cursor: pointer;">
-                                    <td class="px-4 py-3">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="stats-icon rounded-3 bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <i class="bi bi-file-earmark-text"></i>
-                                            </div>
-                                            <span class="fw-semibold text-truncate text-on-surface" style="max-width: 200px;" [title]="doc.docTitle">{{ doc.docTitle }}</span>
-                                            <span class="fw-semibold text-truncate text-on-surface" style="max-width: 100%;" [title]="doc.docTitle">{{ doc.docTitle }}</span>
+                            @for (doc of documents; track doc._id) {
+                            <tr [class.bg-light]="previewFileName === (doc.docTitle || doc.documentPath)"
+                                style="cursor: pointer;">
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="stats-icon rounded-3 bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="bi bi-file-earmark-text"></i>
                                         </div>
-                                    </td>
-                                    <td class="text-text-secondary">{{ (doc.createdAt | date:'MMM d, yyyy') || 'N/A' }}</td>
-                                    
-                                    <td class="text-text-secondary">
-                                        <span [title]="doc.fileSize + ' bytes'">{{ formatBytes(doc.fileSize) }}</span><br>
-                                        <span>{{ getFileTypeLabel(doc.fileType) }}</span></td>
-                                    <td class="text-text-secondary">
-                                        <span class="text-truncate d-inline-block" style="max-width: 120px;" [title]="doc.senderName || 'N/A'">
-                                    <td class="text-text-secondary text-truncate" style="max-width: 100px;">
-                                        <span class="d-inline-block" style="max-width: 100%;" [title]="doc.senderName || 'N/A'">
-                                            {{ doc.senderName || 'N/A' }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center"> 
-                                        <span class="badge px-3 py-1 rounded-pill small"
-                                              [ngClass]="{
+                                        <div class="d-flex flex-column overflow-hidden">
+                                            <span class="fw-bold text-dark fs-5 text-truncate" style="max-width: 100%;" [title]="doc.docTitle">{{ doc.docTitle }}</span>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                <span class="text-primary small fw-semibold">{{ formatBytes(doc.fileSize) }}</span>
+                                                <span class="text-muted opacity-50">•</span>
+                                                <span class="text-secondary small fw-bold text-uppercase" style="font-size: 10px; letter-spacing: 0.5px;">{{ getFileTypeLabel(doc.fileType) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-text-secondary d-none d-lg-table-cell">{{ (doc.createdAt | date:'MMM d,
+                                    yyyy') || 'N/A' }}</td>
+                                <td class="text-text-secondary text-truncate d-none d-md-table-cell"
+                                    style="max-width: 100px;">
+                                    <span class="d-inline-block" style="max-width: 100%;"
+                                        [title]="doc.senderName || 'N/A'">
+                                        {{ doc.senderName || 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge px-3 py-1 rounded-pill small" [ngClass]="{
                                                   'text-bg-primary': doc.status === 'done',
                                                   'text-bg-warning': doc.status === 'reviewed',
                                                   'text-bg-success': doc.status === 'submitted',
                                                   'text-bg-danger': doc.status === 'rejected',
                                                   'text-bg-secondary': !['done', 'reviewed', 'submitted', 'rejected'].includes(doc.status)
                                               }">
-                                            {{ doc.status | titlecase }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 text-end">
-                                        <div class="d-flex justify-content-end gap-1">
-                                            <button class="btn btn-icon-round text-text-secondary border-0 bg-transparent shadow-none" (click)="$event.stopPropagation(); setPreview(doc)" title="Preview">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-icon-round text-primary border-0 bg-transparent shadow-none" (click)="$event.stopPropagation(); downloadDocument(doc)" title="Download">
-                                                <i class="bi bi-download"></i>
-                                            </button>
-                                            <button class="btn btn-icon-round text-danger border-0 bg-transparent shadow-none" (click)="$event.stopPropagation(); deleteDocument(doc)" title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                }
+                                        {{ doc.status | titlecase }}
+                                    </span>
+                                </td>
+                                <td class="px-4 text-end">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <button
+                                            class="btn btn-icon-round text-text-secondary border-0 bg-transparent shadow-none"
+                                            (click)="$event.stopPropagation(); setPreview(doc)" title="Preview">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button
+                                            class="btn btn-icon-round text-primary border-0 bg-transparent shadow-none"
+                                            (click)="$event.stopPropagation(); downloadDocument(doc)" title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                        <button
+                                            class="btn btn-icon-round text-danger border-0 bg-transparent shadow-none"
+                                            (click)="$event.stopPropagation(); deleteDocument(doc)" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            }
                             } @else {
-                                <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted opacity-50">
-                                        <i class="bi bi-folder-x fs-1 mb-2 d-block"></i>
-                                        No documents found for this customer.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted opacity-50">
+                                    <i class="bi bi-folder-x fs-1 mb-2 d-block"></i>
+                                    No documents found for this customer.
+                                </td>
+                            </tr>
                             }
                         </tbody>
                     </table>
-                </div> 
+                </div>
+
+                <!-- Mobile Document List (Card View) -->
+                <div class="d-md-none p-3">
+                    @if (documents.length > 0) {
+                    @for (doc of documents; track doc._id) {
+                    <div class="glass-card mb-3 p-3 border shadow-sm rounded-20" (click)="setPreview(doc)"
+                        style="cursor: pointer;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2 overflow-hidden">
+                                <div class="stats-icon rounded-3 bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+                                <span class="fw-bold text-on-surface text-truncate" [title]="doc.docTitle">{{
+                                    doc.docTitle }}</span>
+                            </div>
+
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="text-text-secondary text-label-sm mb-1"
+                                    style="font-size: 10px; letter-spacing: 0.5px;">DATE</div>
+                                <div class="small text-on-surface fw-medium">{{ (doc.createdAt | date:'MMM d, yyyy') ||
+                                    'N/A' }}</div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div class="text-text-secondary text-label-sm mb-1"
+                                    style="font-size: 10px; letter-spacing: 0.5px;">SIZE</div>
+                                <div class="small text-on-surface fw-medium">{{ formatBytes(doc.fileSize) }}</div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="text-text-secondary text-label-sm mb-1"
+                                    style="font-size: 10px; letter-spacing: 0.5px;">SENDER</div>
+                                <div class="small text-on-surface text-truncate">{{ doc.senderName || 'N/A' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center gap-2 border-top pt-2 mt-2">
+                            <span class="badge px-3 py-1 rounded-pill small d-inline-flex align-items-center justify-content-center" [ngClass]="{
+                                              'text-bg-primary': doc.status === 'done',
+                                              'text-bg-warning': doc.status === 'reviewed',
+                                              'text-bg-success': doc.status === 'submitted',
+                                              'text-bg-danger': doc.status === 'rejected',
+                                              'text-bg-secondary': !['done', 'reviewed', 'submitted', 'rejected'].includes(doc.status)
+                                          }">
+                                {{ doc.status | titlecase }}
+                            </span>
+                            <button class="btn btn-icon-round text-text-secondary border-0 bg-transparent shadow-none"
+                                (click)="$event.stopPropagation(); setPreview(doc)" title="Preview">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-icon-round text-primary border-0 bg-transparent shadow-none"
+                                (click)="$event.stopPropagation(); downloadDocument(doc)" title="Download">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <button class="btn btn-icon-round text-danger border-0 bg-transparent shadow-none"
+                                (click)="$event.stopPropagation(); deleteDocument(doc)" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    }
+                    } @else {
+                    <div class="text-center py-4 text-muted opacity-50">
+                        <i class="bi bi-folder-x fs-2 mb-2 d-block"></i>
+                        No documents found for this customer.
+                    </div>
+                    }
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <!-- message section -->
-            <div class="glass-card rounded-30 d-flex flex-column overflow-hidden shadow-sm mb-4" style="height: 500px;">
-            <div class="glass-card rounded-30 d-flex flex-column overflow-hidden shadow-sm mb-4" style="min-height: 300px;">
-                <div class="p-4 border-bottom border-light d-flex align-items-center gap-3 bg-white">
-                    <div class="stats-icon rounded-xl bg-primary-fixed-dim text-primary" style="width: 40px; height: 40px;">
-                        <i class="bi bi-chat-dots"></i>
+
+        <!-- Sidebar: Chat section (Offcanvas on Mobile/Tablet) -->
+        <div class="col-lg-4 offcanvas-lg offcanvas-end" tabindex="-1" id="chatSidebar"
+            aria-labelledby="chatSidebarLabel">
+            <div class="glass-card rounded-lg-30 d-flex flex-column h-100 overflow-hidden shadow-sm chat-container"
+                style="min-height: 550px;">
+                <!-- Offcanvas Header for mobile -->
+                <div
+                    class="p-3 p-md-4 border-bottom border-light d-flex align-items-center justify-content-between bg-white flex-shrink-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stats-icon rounded-xl bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-body-lg font-bold mb-0">Document Chat</h3>
+                            <p class="text-label-sm text-text-muted mb-0 small">Direct support with Admin</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-body-lg font-bold mb-0">Document Chat</h3>
-                        <p class="text-label-sm text-text-muted mb-0">Direct support with Admin</p>
-                    </div>
+                    <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas"
+                        data-bs-target="#chatSidebar" aria-label="Close"></button>
                 </div>
 
                 <!-- Chat Thread -->
-                <div class="flex-grow-1 overflow-auto p-4 custom-scrollbar bg-surface-bright" #chatScroll>
-                    <div class="d-flex flex-column gap-4">
+                <div class="flex-grow-1 overflow-auto custom-scrollbar bg-surface-bright chat-messages-area" #chatScroll>
+                    <div class="d-flex flex-column gap-2">
                         @for (msg of chatMessages; track msg._id) {
-                            <div class="d-flex gap-2" [class.flex-row-reverse]="msg.senderId === currentUserId">
+                        <div class="d-flex gap-2 w-100" [class.flex-row-reverse]="msg.senderId == currentUserId">
                                 <div class="avatar rounded-circle d-flex align-items-center justify-content-center fw-bold small" 
-                                     [ngClass]="msg.senderId === currentUserId ? 'bg-primary text-white' : 'bg-primary-fixed-dim text-primary'"
+                                     [ngClass]="msg.senderId == currentUserId ? 'bg-primary text-white' : 'bg-primary-fixed-dim text-primary'"
                                      style="width: 32px; height: 32px; flex-shrink: 0;">
-                                    {{ msg.senderId === currentUserId ? getInitials(getCurrentUserName()) : getInitials(msg.senderName || 'Admin') }}
+                                    {{ msg.senderId == currentUserId ? getInitials(getCurrentUserName()) : getInitials(msg.senderName || 'Admin') }}
                                 </div>
                                 <div class="message-bubble p-3 rounded-2xl shadow-sm"
-                                     [ngClass]="msg.senderId === currentUserId ? 'sent' : 'received'">
+                                     [ngClass]="msg.senderId == currentUserId ? 'sent' : 'received'">
                                     <p class="font-body-base mb-1">{{ msg.messages }}</p>
-                                    <p class="text-label-sm mb-0" style="font-size: 10px;" [class.text-white]="msg.senderId === currentUserId" [class.opacity-75]="msg.senderId === currentUserId" [class.text-text-muted]="msg.senderId !== currentUserId">
+                                    <p class="text-label-sm mb-0" style="font-size: 10px;" [class.text-white]="msg.senderId == currentUserId" [class.opacity-75]="msg.senderId == currentUserId" [class.text-text-muted]="msg.senderId != currentUserId">
                                         {{ msg.createdAt | date:'shortTime' }}
                                     </p>
                                 </div>
@@ -197,37 +294,34 @@
 
                         <!-- Typing Indicator -->
                         @if (otherUserTyping) {
-                            <div class="d-flex align-items-center gap-2 mb-2 animate-fade-in">
-                                <div class="avatar bg-primary-fixed-dim text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold small" style="width: 24px; height: 24px; flex-shrink: 0;">
-                                    {{ getInitials('Admin') }}
-                                </div>
-                                <div class="message-bubble received px-3 py-2 rounded-2xl">
-                                    <div class="typing-dots">
-                                        <span class="small text-muted">Admin is typing...</span>
-                                    </div>
+                        <div class="d-flex align-items-center gap-2 mb-2 animate-fade-in">
+                            <div class="avatar bg-primary-fixed-dim text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold small"
+                                style="width: 24px; height: 24px; flex-shrink: 0;">
+                                {{ getInitials('Admin') }}
+                            </div>
+                            <div class="message-bubble received px-3 py-2 rounded-2xl">
+                                <div class="typing-dots">
+                                    <span class="small text-muted">Admin is typing...</span>
                                 </div>
                             </div>
+                        </div>
                         }
                     </div>
                 </div>
 
                 <!-- Chat Input -->
                 <div class="p-3 border-top border-light bg-white">
-                    <div class="input-group input-group-sm">
-                        <input type="text" 
-                               class="form-control border-0 bg-light rounded-start-pill px-4 shadow-none" 
-                               placeholder="Write a message..."
-                               [(ngModel)]="newMessageText"
-                               (keyup.enter)="sendMessage()"
-                               (input)="onTyping()">
-                        <button class="btn btn-primary rounded-end-pill px-3 shadow-none d-flex align-items-center" (click)="sendMessage()">
+                    <div class="input-group input-group-sm chat-input-group">
+                        <input type="text" class="form-control border-0 bg-light rounded-start-pill px-4 shadow-none"
+                            placeholder="Write a message..." [(ngModel)]="newMessageText" (keyup.enter)="sendMessage()"
+                            (input)="onTyping()">
+                        <button class="btn btn-primary rounded-end-pill px-3 shadow-none d-flex align-items-center"
+                            (click)="sendMessage()">
                             <i class="bi bi-send"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-       
         </div>
     </div>
 </div>
@@ -241,15 +335,17 @@
                 <h5 class="font-h2 text-primary mb-0">Upload New Document</h5>
                 <button type="button" class="btn-close" (click)="closeUploadModal()"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-2">
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="text-label-sm text-text-secondary">Document Title</label>
-                        <input type="text" class="form-control bg-surface-container-low border-0 rounded-xl py-2" [(ngModel)]="uploadForm.docTitle" placeholder="Enter title">
+                        <input type="text" class="form-control bg-surface-container-low border-0 rounded-xl py-2"
+                            [(ngModel)]="uploadForm.docTitle" placeholder="Enter title">
                     </div>
                     <div class="col-12">
                         <label class="text-label-sm text-text-secondary">Description</label>
-                        <textarea class="form-control bg-surface-container-low border-0 rounded-xl py-2" rows="2" [(ngModel)]="uploadForm.docDescription" placeholder="Brief description"></textarea>
+                        <textarea class="form-control bg-surface-container-low border-0 rounded-xl py-2" rows="2"
+                            [(ngModel)]="uploadForm.docDescription" placeholder="Brief description"></textarea>
                     </div>
                     <!-- <div class="col-md-12">
                         <label class="text-label-sm text-text-secondary">Status</label>
@@ -262,26 +358,32 @@
                     </div> -->
                     <div class="col-12">
                         <label class="text-label-sm text-text-secondary">Select File</label>
-                        <input type="file" class="form-control bg-surface-container-low border-0 rounded-xl py-2" (change)="onFileSelected($event)">
+                        <input type="file" class="form-control bg-surface-container-low border-0 rounded-xl py-2"
+                            (change)="onFileSelected($event)">
                         @if (isLoading && uploadProgress >= 0) {
-                            <div class="mt-3">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-label-sm text-primary fw-bold">
-                                        {{ uploadProgress === 100 ? 'Processing...' : ('Uploading: ' + currentUploadedSize + ' / ' + totalFileSize) }}
-                                    </span>
-                                    <span class="text-label-sm text-primary fw-bold">{{ uploadProgress }}%</span>
-                                </div>
-                                <div class="progress" style="height: 8px;">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" [style.width.%]="uploadProgress"></div>
-                                </div>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-label-sm text-primary fw-bold">
+                                    {{ uploadProgress === 100 ? 'Processing...' : ('Uploading: ' + currentUploadedSize +
+                                    ' / ' + totalFileSize) }}
+                                </span>
+                                <span class="text-label-sm text-primary fw-bold">{{ uploadProgress }}%</span>
                             </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                    [style.width.%]="uploadProgress"></div>
+                            </div>
+                        </div>
                         }
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-0 p-4 d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-link text-muted text-decoration-none" (click)="isLoading ? closeUploadModal() : cancelUpload()">{{ isLoading ? 'Close Modal' : 'Cancel' }}</button>
-                <button type="button" class="btn btn-primary px-4 rounded-xl shadow-sm" (click)="confirmUpload()" [disabled]="!selectedFile || !uploadForm.docTitle || isLoading">Confirm Upload</button>
+            <div class="modal-footer border-0 p-2 d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-link text-muted text-decoration-none"
+                    (click)="isLoading ? closeUploadModal() : cancelUpload()">{{ isLoading ? 'Close Modal' : 'Cancel'
+                    }}</button>
+                <button type="button" class="btn btn-primary px-4 rounded-xl shadow-sm" (click)="confirmUpload()"
+                    [disabled]="!selectedFile || !uploadForm.docTitle || isLoading">Confirm Upload</button>
             </div>
         </div>
     </div>
@@ -290,38 +392,46 @@
 
 <!-- Floating Background Upload Indicator -->
 @if (isLoading && !isUploadModalOpen) {
-<div class="position-fixed bottom-0 end-0 m-4 p-3 glass-card shadow-lg border rounded-30 animate-slide-up" style="z-index: 1050; width: 320px;">
+<div class="position-fixed bottom-0 end-0 m-4 p-3 glass-card shadow-lg border rounded-30 animate-slide-up"
+    style="z-index: 1050; width: 320px;">
     <div class="d-flex align-items-center gap-3 mb-2">
-        <div class="stats-icon rounded-circle bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+        <div class="stats-icon rounded-circle bg-primary-fixed-dim text-primary d-flex align-items-center justify-content-center"
+            style="width: 32px; height: 32px;">
             <i class="bi bi-cloud-arrow-up-fill animate-bounce"></i>
         </div>
         <div class="flex-grow-1 overflow-hidden">
-            <p class="text-label-sm fw-bold mb-0 text-truncate" [title]="uploadForm.docTitle">{{ uploadForm.docTitle || 'Uploading Document...' }}</p>
-            <p class="text-text-muted small mb-0">{{ currentUploadedSize }} of {{ totalFileSize }} ({{ uploadProgress }}%)</p>
+            <p class="text-label-sm fw-bold mb-0 text-truncate" [title]="uploadForm.docTitle">{{ uploadForm.docTitle ||
+                'Uploading Document...' }}</p>
+            <p class="text-text-muted small mb-0">{{ currentUploadedSize }} of {{ totalFileSize }} ({{ uploadProgress
+                }}%)</p>
         </div>
-    
+
     </div>
     <div class="progress" style="height: 6px;">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" [style.width.%]="uploadProgress"></div>
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+            [style.width.%]="uploadProgress"></div>
     </div>
     <div class="mt-2 text-center">
-        <button class="btn btn-link btn-sm text-primary p-0 text-decoration-none font-bold" (click)="isUploadModalOpen = true">Show Details</button>
+        <button class="btn btn-link btn-sm text-primary p-0 text-decoration-none font-bold"
+            (click)="isUploadModalOpen = true">Show Details</button>
     </div>
 </div>
 }
 
 <!-- Delete Confirmation Modal -->
 @if (isDeleteModalOpen) {
-<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);" (click)="cancelDelete()">
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);"
+    (click)="cancelDelete()">
     <div class="modal-dialog modal-sm modal-dialog-centered" (click)="$event.stopPropagation()">
         <div class="modal-content border-0 shadow-lg rounded-30 glass-card">
-            <div class="modal-body text-center p-4">
+            <div class="modal-body text-center p-2">
                 <div class="text-danger mb-3">
                     <i class="bi bi-exclamation-octagon fs-1"></i>
                 </div>
                 <h5 class="fw-bold text-primary">Confirm Delete</h5>
-                <p class="text-muted small">Are you sure you want to delete <strong>{{ documentToDelete?.docTitle }}</strong>? This action cannot be undone.</p>
-                
+                <p class="text-muted small">Are you sure you want to delete <strong>{{ documentToDelete?.docTitle
+                        }}</strong>? This action cannot be undone.</p>
+
                 <div class="alert alert-warning py-2 small mb-0 border-0 rounded-xl">
                     <i class="bi bi-info-circle me-1"></i>
                     This will permanently remove the file.
@@ -329,7 +439,8 @@
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4">
                 <button type="button" class="btn btn-light px-4 rounded-pill" (click)="cancelDelete()">No</button>
-                <button type="button" class="btn btn-danger px-4 rounded-pill shadow-sm" (click)="executeDelete()">Yes, Delete</button>
+                <button type="button" class="btn btn-danger px-4 rounded-pill shadow-sm" (click)="executeDelete()">Yes,
+                    Delete</button>
             </div>
         </div>
     </div>
@@ -345,51 +456,48 @@
                 <h5 class="font-h2 text-primary mb-0">{{ currentViewedDocument?.docTitle || 'Document Preview' }}</h5>
                 <button type="button" class="btn-close" (click)="closeViewModal()"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-2">
                 @if (currentViewedDocument?.docDescription) {
-                    <p class="text-label-sm text-text-secondary mb-3">{{ currentViewedDocument.docDescription }}</p>
+                <p class="text-label-sm text-text-secondary mb-3">{{ currentViewedDocument.docDescription }}</p>
                 }
                 @if (isLocalDocxPreview) {
-                    <div id="local-preview-container" class="bg-white border rounded-xl overflow-auto p-3 position-relative" style="height: 600px;">
-                        @if (isRenderingLocal) {
-                    <div id="local-preview-container" class="bg-white border rounded-xl overflow-auto p-3 position-relative" style="max-height: 70vh;">
-                        @if (isRenderingLocal) { 
-                            <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                <div class="spinner-border text-primary mb-2" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <div class="text-muted small">Rendering document...</div>
-                            </div>
-                        }
-                    </div>
-                } @else if (filePreviewUrl) {
-                @if (isPdf(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '') || 
-                @if (isPdf(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '') ||
-                     isOfficeFile(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '')) {
-                        <iframe [src]="filePreviewUrl" width="100%" height="600px" class="border-0 rounded-xl"></iframe>
-                        <iframe [src]="filePreviewUrl" width="100%" height="70vh" class="border-0 rounded-xl"></iframe>
-                } @else if (isImage(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '')) {
-                        <img [src]="filePreviewUrl" class="img-fluid rounded-xl shadow-sm" style="max-height: 600px;">
-                        <img [src]="filePreviewUrl" class="img-fluid rounded-xl shadow-sm" style="max-height: 70vh;">
-                } @else {
-                        <div class="text-center opacity-50 py-5">
-                            <i class="bi bi-file-earmark-x fs-1 mb-2 d-block"></i>
-                            <h4 class="font-h2">Unsupported file type for preview.</h4>
-                            <p class="text-text-muted">You can still download the file.</p>
+                <div id="local-preview-container" class="bg-white border rounded-xl overflow-auto p-3 position-relative"
+                    style="max-height: 70vh;">
+                    @if (isRenderingLocal) {
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                        <div class="spinner-border text-primary mb-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                    }
-                } @else {
-                    <div class="text-center opacity-50 py-5">
-                        <i class="bi bi-file-earmark-x fs-1 mb-2 d-block"></i>
-                        <h4 class="font-h2">No preview available.</h4>
+                        <div class="text-muted small">Rendering document...</div>
                     </div>
+                    }
+                </div>
+                } @else if (filePreviewUrl) {
+                @if (isPdf(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '') ||
+                isOfficeFile(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '')) {
+                <iframe [src]="filePreviewUrl" width="100%" height="70vh" class="border-0 rounded-xl"></iframe>
+                } @else if (isImage(currentViewedDocument?.documentPath || currentViewedDocument?.filePath || '')) {
+                <img [src]="filePreviewUrl" class="img-fluid rounded-xl shadow-sm" style="max-height: 70vh;">
+                } @else {
+                <div class="text-center opacity-50 py-5">
+                    <i class="bi bi-file-earmark-x fs-1 mb-2 d-block"></i>
+                    <h4 class="font-h2">Unsupported file type for preview.</h4>
+                    <p class="text-text-muted">You can still download the file.</p>
+                </div>
+                }
+                } @else {
+                <div class="text-center opacity-50 py-5">
+                    <i class="bi bi-file-earmark-x fs-1 mb-2 d-block"></i>
+                    <h4 class="font-h2">No preview available.</h4>
+                </div>
                 }
             </div>
-            <div class="modal-footer border-0 p-4">
+            <div class="modal-footer border-0 p-2">
                 <div class="d-flex align-items-center gap-3 me-auto">
                     <label for="documentStatus" class="text-label-sm text-text-secondary mb-0">Status:</label>
-                    <select id="documentStatus" class="form-select form-select-sm bg-surface-container-low border-0 rounded-xl py-2"
-                            [(ngModel)]="selectedStatus">
+                    <select id="documentStatus"
+                        class="form-select form-select-sm bg-surface-container-low border-0 rounded-xl py-2"
+                        [(ngModel)]="selectedStatus">
                         <option value="submitted">Submitted</option>
                         <option value="pending">Pending</option>
                         <option value="reviewed">Reviewed</option>
@@ -398,13 +506,15 @@
                     </select>
                     <!-- <button type="button" class="btn btn-primary px-3 rounded-xl shadow-sm" (click)="updateDocumentStatus()">Update Status</button> -->
                 </div>
-                <button type="button" class="btn btn-link text-muted text-decoration-none" (click)="closeViewModal()">Close</button>
+                <button type="button" class="btn btn-link text-muted text-decoration-none"
+                    (click)="closeViewModal()">Close</button>
                 <!-- @if (currentViewedDocument?.documentPath || currentViewedDocument?.filePath) {
                     <button type="button" class="btn btn-primary px-4 rounded-xl shadow-sm" (click)="downloadDocument(currentViewedDocument)">
                         <i class="bi bi-download me-2"></i> Download
                     </button>
                 } -->
-                      <button type="button" class="btn btn-primary px-3 rounded-xl shadow-sm" (click)="updateDocumentStatus()">Update Status</button>
+                <button type="button" class="btn btn-primary px-3 rounded-xl shadow-sm"
+                    (click)="updateDocumentStatus()">Update Status</button>
             </div>
         </div>
     </div>

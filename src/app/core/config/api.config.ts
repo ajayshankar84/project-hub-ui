@@ -13,8 +13,8 @@ export const DOCUMENT_ENDPOINT = `${API_BASE_URL}/document-detail`;
 //  CUSTOMER_ENDPOINT
 export const MESSAGE_ENDPOINT = `${API_BASE_URL}/message`;
 
-//  internship
-export const LMS_INTERNSHIP_ENDPOINT = `${API_BASE_URL}/internship`;
+//  PROJECT
+export const PROJECT_ENDPOINT = `${API_BASE_URL}/project`;
 
 
 export const LMS_AUTH_ENDPOINT = `${API_BASE_URL}/auth`;

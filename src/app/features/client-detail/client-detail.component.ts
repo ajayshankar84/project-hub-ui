@@ -81,6 +81,7 @@ export class ClientDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const user = this.authService.currentUserValue;
+    this.currentUserId = (user?._id || user?.id)?.toString();
     if (user && user.mobile) {
       this.fetchCustomerByMobile(user.mobile);
     } else {
@@ -133,9 +134,6 @@ export class ClientDetailComponent implements OnInit, OnDestroy {
         this.customer = Array.isArray(extractedData) ? extractedData[0] : extractedData;
 
         if (this.customer) {
-          // Normalize ID for template and service calls
-          this.currentUserId = (this.customer._id || this.customer.id)?.toString();
-
           // Map properties for UI (Construct name from first/last if missing)
           if (!this.customer.name) {
             if (this.customer.firstName || this.customer.lastName) {
@@ -145,9 +143,10 @@ export class ClientDetailComponent implements OnInit, OnDestroy {
             }
           }
 
-          if (this.currentUserId) {
-            this.fetchDocuments(this.currentUserId);
-            this.initChat(this.currentUserId);
+          const customerId = (this.customer._id || this.customer.id)?.toString();
+          if (customerId) {
+            this.fetchDocuments(customerId);
+            this.initChat(customerId);
           }
         }
         
@@ -520,6 +519,19 @@ export class ClientDetailComponent implements OnInit, OnDestroy {
         });
       });
 
+    // Listen for read receipts (when Admin reads Customer messages)
+    this.chatService.onMessagesRead()
+      .pipe(takeUntil(this.chatDestroy$), takeUntil(this.destroy$))
+      .subscribe(({ readerId }) => {
+        this.ngZone.run(() => {
+          if (readerId !== this.currentUserId) {
+            this.chatMessages.forEach(m => {
+              if (m.senderId === this.currentUserId) m.isRead = true;
+            });
+          }
+        });
+      });
+
     // Live incoming messages
     this.chatService.onMessageReceived()
       .pipe(takeUntil(this.chatDestroy$), takeUntil(this.destroy$))
@@ -542,6 +554,8 @@ export class ClientDetailComponent implements OnInit, OnDestroy {
           } else {
             this.chatMessages = [...this.chatMessages, msg];
             this.scrollChatToBottom();
+            // Auto-read: Send receipt back to Admin since chat is open
+            this.chatService.markRead(this.customer._id, this.currentUserId!);
           }
         });
       });
