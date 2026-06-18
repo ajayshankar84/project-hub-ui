@@ -730,6 +730,29 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     return parts[0][0].toUpperCase();
   }
 
+  getProjectProgress(status: string | undefined): number {
+    switch (status) {
+      case 'pending':
+        return 25;
+      case 'in-progress':
+        return 75;
+      case 'completed':
+      case 'overdue': // Overdue can also be considered 100% "progress" towards its due date
+        return 100;
+      default:
+        return 0;
+    }
+  }
+
+  getProgressBarClass(status: string | undefined): string {
+    switch (status) {
+      case 'completed': return 'bg-success';
+      case 'overdue': return 'bg-danger';
+      case 'in-progress': return 'bg-info';
+      default: return 'bg-primary'; // pending or unknown
+    }
+  }
+
   /**
    * Converts a raw MIME type or extension into a human-readable label.
    */

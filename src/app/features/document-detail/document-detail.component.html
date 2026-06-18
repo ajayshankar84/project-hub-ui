@@ -70,6 +70,10 @@
                                 </div>
                                 <p class="text-text-secondary small mb-1">Due Date: {{ project.dueDate | date:'mediumDate' }}</p>
                                 <p class="text-text-muted small mb-0">Created: {{ project.createdAt | date:'short' }}</p>
+                                <div class="progress mt-2" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" [style.width.%]="getProjectProgress(project.status)"
+                                         [ngClass]="getProgressBarClass(project.status)" [attr.aria-valuenow]="getProjectProgress(project.status)" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
                             </div>
                         </div>
                     }
