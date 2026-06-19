@@ -9,6 +9,7 @@ export interface Project {
   dueDate: string;
   customerId: string; // Assuming projects are linked to a customer
   status?: string; // e.g., 'pending', 'completed'
+  cost?: number | string; // project cost/earning
   createdAt?: Date;
   updatedAt?: Date;
 }

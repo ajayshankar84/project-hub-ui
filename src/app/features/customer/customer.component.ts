@@ -29,7 +29,7 @@ export class CustomerComponent implements OnInit {
     email: '',
     mobile: '',
     company: '',
-    country: '',
+    country: 'India',
     status: 'active'
   };
   insuranceToDelete: any = null;
@@ -181,7 +181,7 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
-      country: '',
+      country: 'India',
       status: 'active'
     };
     this.isAddModalOpen = true;
@@ -193,12 +193,29 @@ export class CustomerComponent implements OnInit {
       return;
     }
     this.isLoading = true;
+    // Ensure company is set to 'individual' when empty
+    if (!this.newCustomer.company) {
+      this.newCustomer.company = 'Individual';
+    }
+    // Ensure country defaults to India when empty
+    if (!this.newCustomer.country) {
+      this.newCustomer.country = 'India';
+    }
+
     this.customerService.createCustomer(this.newCustomer).subscribe({
-      next: () => {
-        this.loadInsurances();
+      next: (res: any) => {
+        // Try to obtain the created customer's id from common response shapes
+        const createdId = res?.data?._id || res?._id || res?.id || (res && typeof res === 'string' ? res : null);
         this.closeAddModal();
         this.showToast('Customer added successfully', 'success');
         this.isLoading = false;
+        if (createdId) {
+          // navigate to document-detail for the newly created customer
+          this.router.navigate(['/features/document-detail', createdId]);
+        } else {
+          // fallback: reload list if id not returned
+          this.loadInsurances();
+        }
       },
       error: (err: any) => {
         console.error('Error adding customer:', err);
@@ -221,11 +238,23 @@ export class CustomerComponent implements OnInit {
   saveInsurance(): void {
     if (this.selectedInsurance) {
       this.isLoading = true;
+      // Ensure company is set to 'individual' when empty
+      if (!this.selectedInsurance.company) {
+        this.selectedInsurance.company = 'individual';
+      }
+      // Ensure country defaults to India when empty
+      if (!this.selectedInsurance.country) {
+        this.selectedInsurance.country = 'India';
+      }
+
       this.customerService.updateCustomer(this.selectedInsurance._id, this.selectedInsurance).subscribe({
         next: () => {
-          this.loadInsurances();
+          
           this.closeEditModal();
           this.showToast('Customer record updated successfully', 'success');
+          setTimeout(() => {
+             this.loadInsurances();
+          },2000)
         },
         error: (err: any) => {
           console.error('Error updating insurance:', err);
@@ -298,7 +327,7 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
-      country: '',
+      country: 'India',
       status: 'active'
     };
   }

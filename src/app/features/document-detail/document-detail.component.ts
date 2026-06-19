@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DueLabelPipe } from '../../shared/pipes/due-label.pipe';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
@@ -15,7 +16,7 @@ import { AuthService } from '../../core/services/auth.service'; // your auth ser
 @Component({
   selector: 'app-document-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DueLabelPipe],
   templateUrl: './document-detail.component.html',
   styleUrl: './document-detail.component.scss'
 })
@@ -46,11 +47,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   isEditProjectModalOpen = false;
   currentEditingProject: Project | null = null;
   selectedProjectStatus = '';
+  selectedProjectDueDate = '';
 
   isProjectModalOpen = false;
-  projectForm = {
+  projectForm: { projectName: string; dueDate: string; cost?: string | number } = {
     projectName: '',
-    dueDate: ''
+    dueDate: '',
+    cost: 0
   };
 
   isUploadModalOpen = false;
@@ -311,7 +314,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
   openProjectModal() {
     this.isProjectModalOpen = true;
-    this.projectForm = { projectName: '', dueDate: '' };
+    this.projectForm = { projectName: '', dueDate: '', cost: '' };
   }
 
   closeProjectModal() {
@@ -321,6 +324,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   openEditProjectModal(project: Project) {
     this.currentEditingProject = project;
     this.selectedProjectStatus = project.status || 'pending';
+    if (project.dueDate) {
+      try {
+        // Format date string for <input type="date"> (YYYY-MM-DD)
+        this.selectedProjectDueDate = new Date(project.dueDate).toISOString().split('T')[0];
+      } catch (e) {
+        this.selectedProjectDueDate = '';
+      }
+    } else {
+      this.selectedProjectDueDate = '';
+    }
     this.isEditProjectModalOpen = true;
   }
 
@@ -331,9 +344,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
   confirmUpdateProjectStatus() {
     if (!this.currentEditingProject?._id) return;
-    this.projectService.updateProjectStatus(this.currentEditingProject._id, this.selectedProjectStatus).subscribe({
+    this.projectService.updateProjectStatus(
+      this.currentEditingProject._id, 
+      this.selectedProjectStatus, 
+      this.selectedProjectDueDate
+    ).subscribe({
       next: () => {
-        this.showToast('Project status updated successfully', 'success');
+        this.showToast('Project updated successfully', 'success');
         this.fetchProjects(this.customer._id);
         this.closeEditProjectModal();
       },
@@ -356,6 +373,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       customerId: this.customer._id.toString(),
       status: 'pending' // Default status
     };
+
+    // include cost if provided
+    if (this.projectForm.cost !== undefined && this.projectForm.cost !== '') {
+      const parsed = Number(this.projectForm.cost);
+      if (!isNaN(parsed)) newProject.cost = parsed;
+      else newProject.cost = this.projectForm.cost; // fallback to raw value
+    }
 
     this.projectService.createProject(newProject).subscribe({
       next: (project:any) => {

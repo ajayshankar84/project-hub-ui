@@ -1,4 +1,4 @@
-export const API_BASE_URL ='http://localhost:3000';// 'https://a-interview.praispranav.com'; 
+export const API_BASE_URL ='https://project-hub.vashundhra.in';//'http://localhost:3000';//  
 export const PROD_API_BASE_URL = `https://bharatapp-admin.praispranav.com`;
 
 //  INSURANCE

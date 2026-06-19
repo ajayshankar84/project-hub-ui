@@ -1,6 +1,197 @@
-<div class="container-fluid p-4">
-    <!-- Statistics Overview -->
-    <div class="row g-4 bg-white rounded-4 shadow-sm p-4 mb-4 mx-0 border" data-purpose="statistics-overview">
-        <!-- Total Customers Stat -->
+<div class="dashboard-v2-page container-fluid p-4">
+  <div class="top-header">
+    <div class="page-title">
+      <p class="eyebrow">Admin dashboard</p>
+      <h1>Welcome back, {{ userName }}</h1>
+      <p>Track your team, projects, documents, and client activity from a single overview.</p>
+    </div>
 
+    <div class="header-actions">
+      <button type="button" class="btn btn-secondary btn-outline">Generate report</button>
+      <button type="button" class="btn btn-primary">New campaign</button>
+    </div>
+  </div>
+
+  <div class="row g-4 stats-grid">
+    <div class="col-xl-2 col-md-6">
+      <article class="stat-card">
+        <div>
+          <h3>Total projects</h3>
+          <p class="stat-number">{{ totalProjects }}</p>
+          <p class="stat-meta">All projects in the system</p>
+        </div>
+        <div class="stat-icon">📁</div>
+      </article>
+    </div>
+
+    <div class="col-xl-2 col-md-6">
+      <article class="stat-card">
+        <div>
+          <h3>Total customers</h3>
+          <p class="stat-number">{{ totalCustomers }}</p>
+          <p class="stat-meta">Registered customers</p>
+        </div>
+        <div class="stat-icon">👥</div>
+      </article>
+    </div>
+
+    <div class="col-xl-2 col-md-6">
+      <article class="stat-card">
+        <div>
+          <h3>Projects in progress</h3>
+          <p class="stat-number">{{ projectsInProgress }}</p>
+          <p class="stat-meta">Currently active</p>
+        </div>
+        <div class="stat-icon">⚙️</div>
+      </article>
+    </div>
+
+    <div class="col-xl-2 col-md-6">
+      <article class="stat-card">
+        <div>
+          <h3>Projects completed</h3>
+          <p class="stat-number">{{ projectsCompleted }}</p>
+          <p class="stat-meta">Finished projects</p>
+        </div>
+        <div class="stat-icon">✅</div>
+      </article>
+    </div>
+    <div class="col-xl-2 col-md-6">
+      <article class="stat-card">
+        <div>
+          <h3>Total earnings</h3>
+          <p class="stat-number">{{ totalEarnings | currency }}</p>
+          <p class="stat-meta">Sum of project costs</p>
+        </div>
+        <div class="stat-icon">💲</div>
+      </article>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-xl-8">
+      <section class="card-panel analytics-card">
+        <div class="section-title">
+          <h2>Performance overview</h2>
+          <a class="view-all" href="#">View full analytics</a>
+        </div>
+
+        <div class="analytics-grid row g-4">
+          <div class="col-md-6">
+            <div class="mini-card">
+              <h3>Pipeline value</h3>
+              <p class="mini-value">$180k</p>
+              <p class="mini-meta">5 active proposals this month</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mini-card">
+              <h3>New documents</h3>
+              <p class="mini-value">124</p>
+              <p class="mini-meta">Up 22% from last month</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-placeholder">
+          <div class="chart-legend">
+            <span class="legend-dot legend-primary"></span>
+            <span>Client engagement</span>
+            <span class="legend-dot legend-secondary"></span>
+            <span>Project delivery</span>
+          </div>
+          <div class="chart-body">Revenue & activity chart placeholder</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-xl-4">
+      <section class="card-panel activity-card">
+        <div class="section-title">api
+          <h2>Recent activity</h2>
+          <a class="view-all" href="#">See all</a>
+        </div>
+
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let item of recentActivity">
+            <div>
+              <p class="activity-title">{{ item.projectName || item.title }}</p>
+              <p class="activity-meta">{{ item.status }}</p>
+            </div>
+            <span class="activity-time">{{ item.updatedAt || item.time }}</span>
+          </div>
+        </div>
+
+        <div class="section-title mt-4">
+          <h2>Upcoming deadlines</h2>
+          <a class="view-all" href="#">Manage tasks</a>
+        </div>
+
+        <div class="deadline-list">
+          <div class="deadline-item" *ngFor="let deadline of upcomingDeadlines">
+            <div>
+              <p class="deadline-title">{{ deadline.title }}</p>
+              <p class="deadline-meta">Due {{ deadline.deadline }}</p>
+            </div>
+            <span class="badge badge-{{ deadline.status | lowercase }}">{{ deadline.status }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-xl-7">
+      <section class="card-panel project-card">
+        <div class="section-title">
+          <h2>Active projects</h2>
+          <a class="view-all" href="#">View projects</a>
+        </div>
+
+        <div class="project-table">
+          <div class="project-row project-header">
+            <span>Project</span>
+            <span>Status</span>
+            <span>Team</span>
+            <span>Due</span>
+          </div>
+          <div class="project-row" *ngFor="let project of projects">
+            <span>{{ project.name }}</span>
+            <span>{{ project.status }}</span>
+            <span>{{ project.team }}</span>
+            <span>{{ project.due }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-xl-5">
+      <section class="card-panel insights-card">
+        <div class="section-title">
+          <h2>Top clients</h2>
+          <a class="view-all" href="#">More clients</a>
+        </div>
+
+        <div class="client-list">
+          <div class="client-item" *ngFor="let client of topClients">
+            <div>
+              <p class="client-name">{{ client.name }}</p>
+              <p class="client-meta">{{ client.projects }} projects</p>
+            </div>
+            <span class="client-value">{{ client.revenue }}</span>
+          </div>
+        </div>
+
+        <div class="section-title mt-4">
+          <h2>Quick actions</h2>
+        </div>
+
+        <div class="quick-actions">
+          <button type="button" class="btn btn-action">Add client</button>
+          <button type="button" class="btn btn-action">Create invoice</button>
+          <button type="button" class="btn btn-action">Review requests</button>
+        </div>
+      </section>
+    </div>
+  </div>
 </div>
