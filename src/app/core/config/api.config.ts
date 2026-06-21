@@ -1,6 +1,9 @@
 export const API_BASE_URL ='https://project-hub.vashundhra.in';//'http://localhost:3000';//  
 export const PROD_API_BASE_URL = `https://bharatapp-admin.praispranav.com`;
 
+//  USER_ENDPOINT
+export const USER_ENDPOINT = `${API_BASE_URL}/user`;
+
 //  INSURANCE
 export const INSURANCE_ENDPOINT = `${API_BASE_URL}/insurance`;
 

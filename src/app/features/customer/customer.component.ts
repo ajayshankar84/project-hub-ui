@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomerService } from '../../core/services/customer.service';
+import { AuthService, User } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-customer',
@@ -55,6 +56,7 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private customerService: CustomerService,
+    private authService: AuthService,
     private router: Router,
     private el: ElementRef
   ) { }
@@ -205,17 +207,44 @@ export class CustomerComponent implements OnInit {
     this.customerService.createCustomer(this.newCustomer).subscribe({
       next: (res: any) => {
         // Try to obtain the created customer's id from common response shapes
-        const createdId = res?.data?._id || res?._id || res?.id || (res && typeof res === 'string' ? res : null);
-        this.closeAddModal();
-        this.showToast('Customer added successfully', 'success');
-        this.isLoading = false;
-        if (createdId) {
-          // navigate to document-detail for the newly created customer
-          this.router.navigate(['/features/document-detail', createdId]);
-        } else {
-          // fallback: reload list if id not returned
-          this.loadInsurances();
-        }
+        const createdCustomer = res?.data || res;
+        const createdId = createdCustomer?._id || createdCustomer?.id || (createdCustomer && typeof createdCustomer === 'string' ? createdCustomer : null);
+
+        // Build a user payload from the customer data
+        const [firstName, ...lastNameParts] = (this.newCustomer.name || '').trim().split(' ');
+        const lastName = lastNameParts.join(' ') || 'Customer';
+        const userPayload: User = {
+          firstName: firstName || 'Customer',
+          lastName,
+          email: this.newCustomer.email,
+          mobile: this.newCustomer.mobile,
+          role: 'user',
+          password: this.generateDefaultPassword(this.newCustomer.mobile)
+        };
+
+        this.authService.createUser(userPayload).subscribe({
+          next: () => {
+            this.closeAddModal();
+            this.showToast('Customer and user added successfully', 'success');
+            this.isLoading = false;
+            if (createdId) {
+              this.router.navigate(['/features/document-detail', createdId]);
+            } else {
+              this.loadInsurances();
+            }
+          },
+          error: (userErr: any) => {
+            console.error('Error creating linked user:', userErr);
+            this.closeAddModal();
+            this.showToast('Customer added but failed to create linked user', 'danger');
+            this.isLoading = false;
+            if (createdId) {
+              this.router.navigate(['/features/document-detail', createdId]);
+            } else {
+              this.loadInsurances();
+            }
+          }
+        });
       },
       error: (err: any) => {
         console.error('Error adding customer:', err);
@@ -223,6 +252,14 @@ export class CustomerComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private generateDefaultPassword(mobile: string): string {
+    const digits = mobile.replace(/\D/g, '');
+    if (digits.length >= 4) {
+      return `Cust@${digits.slice(-4)}`;
+    }
+    return 'Cust@1234';
   }
 
   openEditModal(insurance: any): void {
