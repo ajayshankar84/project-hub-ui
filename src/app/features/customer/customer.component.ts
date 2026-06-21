@@ -30,6 +30,7 @@ export class CustomerComponent implements OnInit {
     email: '',
     mobile: '',
     company: '',
+    address: '',
     country: 'India',
     status: 'active'
   };
@@ -183,6 +184,7 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
+      address: '',
       country: 'India',
       status: 'active'
     };
@@ -364,9 +366,16 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
+      address: '',
       country: 'India',
       status: 'active'
     };
+  }
+
+  openInvoiceDetail(customer: any): void {
+    if (customer?._id) {
+      this.router.navigate(['/features/invoice-detail', customer._id]);
+    }
   }
 
   viewDocument(customer: any): void {

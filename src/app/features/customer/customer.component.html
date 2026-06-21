@@ -199,10 +199,13 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-primary rounded-pill me-1" (click)="$event.stopPropagation(); openEditModal(customer)" title="Edit">
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill me-1" (click)="$event.stopPropagation(); openInvoiceDetail(customer)" title="Invoice Details">
+                                    <i class="bi bi-receipt"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill me-1" (click)="$event.stopPropagation(); openEditModal(customer)" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger rounded-pill" (click)="$event.stopPropagation(); confirmDelete(customer)" title="Delete">
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" (click)="$event.stopPropagation(); confirmDelete(customer)" title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -290,6 +293,10 @@
                         <label class="form-label small fw-bold text-muted">Company</label>
                         <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="selectedInsurance.company">
                     </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-muted">Address</label>
+                        <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="selectedInsurance.address">
+                    </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-muted">Country <span class="text-danger">*</span></label>
                         <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="selectedInsurance.country">
@@ -366,6 +373,10 @@
                     <div class="col-12">
                         <label class="form-label small fw-bold text-muted">Company </label>
                         <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="newCustomer.company">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-muted">Address</label>
+                        <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="newCustomer.address">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-muted">Country <span class="text-danger">*</span></label>

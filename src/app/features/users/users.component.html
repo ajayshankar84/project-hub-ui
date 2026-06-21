@@ -130,6 +130,10 @@
                   <option value="admin">Admin</option>
                 </select>
             </div>
+              <div class="col-12" *ngIf="selectedUser.role === 'admin'">
+                <label class="form-label small fw-bold" for="address">Address</label>
+                <input type="text" id="address" name="address" [(ngModel)]="selectedUser.address" class="form-control">
+              </div>
               <div class="col-12" *ngIf="isAddModalOpen || isEditModalOpen">
                 <label class="form-label small fw-bold" for="password">Password</label>
                 <div class="input-group">
@@ -168,20 +172,21 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <div class="modal fade show d-block" *ngIf="isDeleteModalOpen" (click)="cancelDelete()" tabindex="-1" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1050;">
-    <div class="modal-dialog modal-dialog-centered modal-sm" (click)="$event.stopPropagation()">
-      <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header">
+  <div class="modal fade show d-block" *ngIf="isDeleteModalOpen && userToDelete" (click)="cancelDelete()" tabindex="-1" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index: 12050;">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header">
           <h5 class="modal-title fw-bold">Confirm Delete</h5>
-          <button type="button" class="btn-close" (click)="cancelDelete()"></button>
-      </div>
+          <button type="button" class="btn-close" aria-label="Close delete confirmation" (click)="cancelDelete()"></button>
+        </div>
         <div class="modal-body text-center">
-          <p class="mb-0">Are you sure you want to delete <strong>{{ userToDelete?.firstName }}</strong>?</p>
+          <p class="mb-0">Are you sure you want to delete <strong>{{ userToDelete.firstName || userToDelete.email }}</strong>?</p>
           <div class="alert alert-warning mt-3 small py-2">This action cannot be undone.</div>
-      </div>
+        </div>
         <div class="modal-footer justify-content-center border-0 pb-4">
           <button type="button" class="btn btn-light px-4" (click)="cancelDelete()">No</button>
           <button type="button" class="btn btn-danger px-4" (click)="executeDelete()">Yes, Delete</button>
+        </div>
       </div>
     </div>
   </div>

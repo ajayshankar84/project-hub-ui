@@ -81,7 +81,8 @@ export class UsersComponent implements OnInit {
       email: '',
       mobile: '',
       role: 'user',
-      password: ''
+      password: '',
+      address: ''
     };
     this.confirmPassword = '';
     this.isAddModalOpen = true;
@@ -144,6 +145,10 @@ export class UsersComponent implements OnInit {
   }
 
   confirmDelete(user: User): void {
+    // Ensure only one modal is open at a time, then show delete confirmation.
+    this.isAddModalOpen = false;
+    this.isEditModalOpen = false;
+    this.selectedUser = null;
     this.userToDelete = user;
     this.isDeleteModalOpen = true;
   }
