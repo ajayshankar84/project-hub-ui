@@ -22,6 +22,9 @@ export const PROJECT_ENDPOINT = `${API_BASE_URL}/project`;
 //  PROJECT Date
 export const PROJECT_DATE_ENDPOINT = `${API_BASE_URL}/project-date`;
 
+
+export const INVOICE_DETAIL_ENDPOINT = `${API_BASE_URL}/invoice-detail`;
+
 export const LMS_AUTH_ENDPOINT = `${API_BASE_URL}/auth`;
 export const LMS_AUTH_BY_MOBILE_ENDPOINT = `${API_BASE_URL}/auth/by-mobile`;
 

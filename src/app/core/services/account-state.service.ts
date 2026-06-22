@@ -15,6 +15,15 @@ export interface AccountSubmissionPayload {
   gstNo?: string;
 }
 
+export interface StoredCompanyItem {
+  cid: string;
+  cname: string;
+  address: string;
+  gstNo: string;
+  email: string;
+  mobile: string;
+}
+
 export interface StoredAccountData {
   id?: string;
   firstName?: string;
@@ -23,6 +32,7 @@ export interface StoredAccountData {
   mobile: string;
   address?: string;
   gstNo?: string;
+  company?: StoredCompanyItem[];
   isLoggedIn?: boolean;
   role?: string;
   access_token?: string;
@@ -108,6 +118,17 @@ export class AccountStateService {
                   response?.token || (payload as any)?.token || (user as any)?.token ||
                   (response as any)?.accessToken || (payload as any)?.accessToken;
 
+    const company = Array.isArray((user as any)?.company)
+      ? (user as any).company.map((companyItem: any) => ({
+          cid: companyItem.cid || '',
+          cname: companyItem.cname || '',
+          address: companyItem.address || '',
+          gstNo: companyItem.gstNo || '',
+          email: companyItem.email || '',
+          mobile: companyItem.mobile || ''
+        }))
+      : undefined;
+
     return {
       id: (user as any)?.id ?? (user as any)?._id,
       firstName: user?.firstName,
@@ -116,6 +137,7 @@ export class AccountStateService {
       mobile: user?.mobile || fallbackMobile,
       address: user?.address,
       gstNo: user?.role?.toLowerCase() === 'admin' ? user?.gstNo : undefined,
+      company: company,
       role: user?.role,
       access_token: token,
       isLoggedIn: true,
@@ -176,6 +198,7 @@ export class AccountStateService {
           mobile: data.mobile,
           address: data.address,
           gstNo: data.role?.toLowerCase() === 'admin' ? data.gstNo : undefined,
+          company: data.company,
           role: (data.role as any) || 'user',
           access_token: data.access_token,
         }

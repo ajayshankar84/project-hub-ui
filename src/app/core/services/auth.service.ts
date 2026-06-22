@@ -14,6 +14,14 @@ export interface User {
   lastName: string;
   mobile: string;
   role: UserRole;
+  company?: {
+    cid: string;
+    cname: string;
+    address: string;
+    gstNo: string;
+    email: string;
+    mobile: string;
+  }[];
   address?: string;
   gstNo?: string;
   password?: string;

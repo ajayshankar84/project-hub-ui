@@ -74,6 +74,42 @@ export class UsersComponent implements OnInit {
     this.searchTerm = '';
   }
 
+  private createCompanyDefaults() {
+    return {
+      cid: this.generateCompanyId(),
+      cname: '',
+      address: '',
+      gstNo: '',
+      email: '',
+      mobile: ''
+    };
+  }
+
+  private generateCompanyId(): string {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+      const random = Math.random() * 16 | 0;
+      const value = char === 'x' ? random : (random & 0x3 | 0x8);
+      return value.toString(16);
+    });
+  }
+
+  onRoleChange(role: User['role']): void {
+    if (!this.selectedUser) {
+      return;
+    }
+
+    this.selectedUser.role = role;
+    if (role === 'admin') {
+      this.selectedUser.company = this.selectedUser.company?.length ? this.selectedUser.company : [this.createCompanyDefaults()];
+    } else {
+      this.selectedUser.company = undefined;
+    }
+  }
+
   addUser(): void {
     this.selectedUser = {
       firstName: '',
@@ -81,16 +117,28 @@ export class UsersComponent implements OnInit {
       email: '',
       mobile: '',
       role: 'user',
-      password: '',
-      address: '',
-      gstNo: ''
+      password: ''
     };
     this.confirmPassword = '';
     this.isAddModalOpen = true;
   }
 
   editUser(user: User): void {
-    this.selectedUser = { ...user }; // Create a copy to avoid immediate mutation
+    this.selectedUser = {
+      ...user,
+      company: user.role === 'admin'
+        ? (user.company?.length
+            ? user.company.map((company) => ({
+                cid: company.cid || this.generateCompanyId(),
+                cname: company.cname || '',
+                address: company.address || '',
+                gstNo: company.gstNo || '',
+                email: company.email || '',
+                mobile: company.mobile || ''
+              }))
+            : [this.createCompanyDefaults()])
+        : undefined
+    }; // Create a copy to avoid immediate mutation
     this.isEditModalOpen = true;
   }
 
@@ -115,7 +163,10 @@ export class UsersComponent implements OnInit {
 
   private executeCreate(): void {
     if (this.selectedUser) {
-      this.authService.createUser(this.selectedUser).subscribe({
+      const userToCreate = this.buildUserPayload(this.selectedUser, true);
+      console.log('Create user payload:', userToCreate);
+
+      this.authService.createUser(userToCreate).subscribe({
         next: () => {
           this.loadUsers(); // Refresh the list
           this.closeModal();
@@ -127,13 +178,8 @@ export class UsersComponent implements OnInit {
 
   private executeUpdate(): void {
     if (this.selectedUser) {
-      // Create a copy to sanitize the payload
-      const userToUpdate = { ...this.selectedUser };
-      
-      // If the password field is empty during an update, remove it so it's not sent
-      if (!userToUpdate.password) {
-        delete userToUpdate.password;
-      }
+      const userToUpdate = this.buildUserPayload(this.selectedUser, false);
+      console.log('Update user payload:', userToUpdate);
 
       this.authService.updateUser(userToUpdate).subscribe({
         next: () => {
@@ -142,6 +188,62 @@ export class UsersComponent implements OnInit {
         },
         error: (err) => console.error('Error updating user:', err)
       });
+    }
+  }
+
+  private buildUserPayload(user: User, includePassword: boolean): User {
+    const companyCollection = user.role === 'admin'
+      ? (user.company?.length
+          ? user.company.map((companyItem) => ({
+              cid: companyItem.cid || this.generateCompanyId(),
+              cname: companyItem.cname || '',
+              address: companyItem.address || '',
+              gstNo: companyItem.gstNo || '',
+              email: companyItem.email || '',
+              mobile: companyItem.mobile || ''
+            }))
+          : [this.createCompanyDefaults()])
+      : undefined;
+
+    const payload: User = {
+      id: user.id,
+      _id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      mobile: user.mobile,
+      role: user.role,
+      company: companyCollection,
+      password: user.password
+    };
+
+    if (!includePassword || !payload.password) {
+      delete payload.password;
+    }
+
+    if (user.role !== 'admin') {
+      delete payload.company;
+    }
+
+    return payload;
+  }
+
+  addCompany(): void {
+    if (!this.selectedUser) {
+      return;
+    }
+
+    this.selectedUser.company = [...(this.selectedUser.company || []), this.createCompanyDefaults()];
+  }
+
+  removeCompany(index: number): void {
+    if (!this.selectedUser?.company) {
+      return;
+    }
+
+    this.selectedUser.company = this.selectedUser.company.filter((_, currentIndex) => currentIndex !== index);
+    if (this.selectedUser.company.length === 0 && this.selectedUser.role === 'admin') {
+      this.selectedUser.company = [this.createCompanyDefaults()];
     }
   }
 

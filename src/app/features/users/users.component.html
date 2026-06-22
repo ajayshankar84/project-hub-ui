@@ -125,18 +125,100 @@
             </div>
               <div class="col-md-6">
                 <label class="form-label small fw-bold" for="role">Role</label>
-                <select id="role" name="role" [(ngModel)]="selectedUser.role" #role="ngModel" required class="form-select" [class.is-invalid]="role.invalid && (role.dirty || role.touched)">
+                <select
+                  id="role"
+                  name="role"
+                  [(ngModel)]="selectedUser.role"
+                  (ngModelChange)="onRoleChange($event)"
+                  #role="ngModel"
+                  required
+                  class="form-select"
+                  [class.is-invalid]="role.invalid && (role.dirty || role.touched)">
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
                 </select>
-            </div>
-              <div class="col-12" *ngIf="selectedUser.role === 'admin'">
-                <label class="form-label small fw-bold" for="address">Address</label>
-                <input type="text" id="address" name="address" [(ngModel)]="selectedUser.address" class="form-control">
               </div>
               <div class="col-12" *ngIf="selectedUser.role === 'admin'">
-                <label class="form-label small fw-bold" for="gstNo">GSTIN</label>
-                <input type="text" id="gstNo" name="gstNo" [(ngModel)]="selectedUser.gstNo" class="form-control" placeholder="27AAAPL1234C1ZV">
+                <div class="border rounded-3 p-3 bg-light-subtle">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="mb-0 fw-bold">Company</h6>
+                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" (click)="addCompany()">
+                      Add Company
+                    </button>
+                  </div>
+                  <div class="d-flex flex-column gap-3" *ngIf="selectedUser.company?.length; else noCompanyItems">
+                    <div class="border rounded-3 p-3 bg-white" *ngFor="let company of selectedUser.company; let i = index">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                          <h6 class="mb-0 fw-semibold">Company {{ i + 1 }}</h6>
+                          <small class="text-muted text-truncate d-block" style="max-width: 240px;">{{ company.cid }}</small>
+                        </div>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-danger rounded-pill"
+                          *ngIf="(selectedUser.company?.length || 0) > 1"
+                          (click)="removeCompany(i)">
+                          Remove
+                        </button>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <label class="form-label small fw-bold" [attr.for]="'companyName-' + i">Company Name</label>
+                          <input
+                            type="text"
+                            [id]="'companyName-' + i"
+                            [name]="'companyName-' + i"
+                            [(ngModel)]="company.cname"
+                            class="form-control"
+                            placeholder="Project Hub Pvt. Ltd.">
+                        </div>
+                        <div class="col-12">
+                          <label class="form-label small fw-bold" [attr.for]="'companyAddress-' + i">Company Address</label>
+                          <input
+                            type="text"
+                            [id]="'companyAddress-' + i"
+                            [name]="'companyAddress-' + i"
+                            [(ngModel)]="company.address"
+                            class="form-control"
+                            placeholder="Full company address">
+                        </div>
+                        <div class="col-12">
+                          <label class="form-label small fw-bold" [attr.for]="'companyGstNo-' + i">Company GSTIN</label>
+                          <input
+                            type="text"
+                            [id]="'companyGstNo-' + i"
+                            [name]="'companyGstNo-' + i"
+                            [(ngModel)]="company.gstNo"
+                            class="form-control"
+                            placeholder="27AAAPL1234C1ZV">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label small fw-bold" [attr.for]="'companyEmail-' + i">Company Email</label>
+                          <input
+                            type="email"
+                            [id]="'companyEmail-' + i"
+                            [name]="'companyEmail-' + i"
+                            [(ngModel)]="company.email"
+                            class="form-control"
+                            placeholder="company@example.com">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label small fw-bold" [attr.for]="'companyMobile-' + i">Company Mobile</label>
+                          <input
+                            type="text"
+                            [id]="'companyMobile-' + i"
+                            [name]="'companyMobile-' + i"
+                            [(ngModel)]="company.mobile"
+                            class="form-control"
+                            placeholder="10 digit mobile number">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-template #noCompanyItems>
+                    <div class="text-muted small">No company entries added yet.</div>
+                  </ng-template>
+                </div>
               </div>
               <div class="col-12" *ngIf="isAddModalOpen || isEditModalOpen">
                 <label class="form-label small fw-bold" for="password">Password</label>

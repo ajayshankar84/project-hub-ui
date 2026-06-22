@@ -12,7 +12,7 @@
         <p class="mb-0 small text-muted">Powered by Project Hub</p>
       </div>
       <div class="text-end">
-        <span class="badge bg-warning text-dark">GSTIN: {{ fromGstNo }}</span>
+        <span class="badge bg-warning text-dark">GSTIN: {{ fromCompanyGstNo }}</span>
       </div>
     </div>
 
@@ -21,18 +21,39 @@
         <div class="row gy-3">
           <div class="col-md-6">
             <h5 class="fw-bold mb-2">From</h5>
-            <p class="mb-1">{{ fromDisplayName }}</p>
-            <ng-container *ngFor="let line of fromAddressLines">
-              <p class="mb-1">{{ line }}</p>
-            </ng-container>
-            <p class="mb-0">Email: {{ fromEmail }}</p>
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+              <label for="fromCompanyName" class="fw-semibold mb-0">Company</label>
+              <select
+                id="fromCompanyName"
+                class="form-select form-select-sm w-auto"
+                [ngModel]="selectedFromCompanyIndex"
+                (ngModelChange)="onFromCompanyChange($event)"
+                name="fromCompanyName">
+                <option *ngFor="let company of fromCompanies; let i = index" [ngValue]="i">
+                  {{ company.cname }}
+                </option>
+              </select>
+            </div>
+            <p class="mb-1">{{ fromCompanyName }}</p>
+            <p class="mb-1">{{ fromCompanyAddress }}</p>
+            <p class="mb-1">Email: {{ fromCompanyEmail }}</p>
+            <p class="mb-0">Mobile: {{ fromCompanyMobile }}</p>
           </div>
           <div class="col-md-6 text-md-end">
             <h5 class="fw-bold mb-2">Invoice</h5>
             <p class="mb-1"><strong>Invoice No:</strong> {{ invoiceNumber }}</p>
             <p class="mb-1"><strong>Date:</strong> {{ invoiceDate }}</p>
             <p class="mb-1"><strong>Due Date:</strong> {{ dueDate }}</p>
-            <p class="mb-0"><strong>Place of Supply:</strong> {{ placeOfSupply }}</p>
+            <div class="d-flex justify-content-md-end align-items-center gap-2 flex-wrap">
+              <label for="placeOfSupply" class="fw-semibold mb-0">Place of Supply:</label>
+              <select
+                id="placeOfSupply"
+                class="form-select form-select-sm w-auto"
+                [(ngModel)]="placeOfSupply"
+                name="placeOfSupply">
+                <option *ngFor="let city of cities" [ngValue]="city">{{ city }}</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -136,7 +157,7 @@
             <p class="mb-1">A/c No: {{ invoiceCustomer?.acNo || bankDetails.account }}</p>
             <p class="mb-1">IFSC: {{ invoiceCustomer?.ifscCode || bankDetails.ifsc }}</p>
             <p class="mb-1">Branch: {{ invoiceCustomer?.branchName || bankDetails.branch }}</p>
-            <p class="mb-0">GST No: {{ invoiceCustomer?.gstNo || fromGstNo }}</p>
+            <p class="mb-0">GST No: {{ invoiceCustomer?.gstNo || fromCompanyGstNo }}</p>
           </div>
         </div>
       </div>
@@ -150,6 +171,12 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+      <button type="button" class="btn btn-success px-4" (click)="submitInvoice()">
+        Submit
+      </button>
     </div>
   </div>
 </div>
