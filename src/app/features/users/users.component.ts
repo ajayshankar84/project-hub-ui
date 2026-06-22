@@ -82,7 +82,8 @@ export class UsersComponent implements OnInit {
       mobile: '',
       role: 'user',
       password: '',
-      address: ''
+      address: '',
+      gstNo: ''
     };
     this.confirmPassword = '';
     this.isAddModalOpen = true;

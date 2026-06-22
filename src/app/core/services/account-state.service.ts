@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
 import { LMS_AUTH_ENDPOINT } from '../config/api.config';
 import { SessionService } from './session.service';
+import { AuthService, User } from './auth.service';
 
 export interface AccountSubmissionPayload {
   firstName: string;
@@ -10,6 +11,8 @@ export interface AccountSubmissionPayload {
   email: string;
   mobile: string;
   password: string;
+  address?: string;
+  gstNo?: string;
 }
 
 export interface StoredAccountData {
@@ -18,6 +21,8 @@ export interface StoredAccountData {
   lastName?: string;
   email?: string;
   mobile: string;
+  address?: string;
+  gstNo?: string;
   isLoggedIn?: boolean;
   role?: string;
   access_token?: string;
@@ -43,10 +48,18 @@ export class AccountStateService {
 
   readonly accountData$ = this.accountDataSubject.asObservable();
 
-  constructor(private http: HttpClient, private sessionService: SessionService) {
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+    private authService: AuthService
+  ) {
     const existing = this.getStoredAccountData();
     if (existing && existing.access_token) {
       this.sessionService.setSessionToken(existing.access_token);
+    }
+
+    if (existing) {
+      this.syncAuthServiceCurrentUser(existing);
     }
   }
 
@@ -101,6 +114,8 @@ export class AccountStateService {
       lastName: user?.lastName,
       email: user?.email,
       mobile: user?.mobile || fallbackMobile,
+      address: user?.address,
+      gstNo: user?.role?.toLowerCase() === 'admin' ? user?.gstNo : undefined,
       role: user?.role,
       access_token: token,
       isLoggedIn: true,
@@ -138,14 +153,35 @@ export class AccountStateService {
 
     if (!data) {
       localStorage.removeItem(this.storageKey);
+      this.syncAuthServiceCurrentUser(null);
       return;
     }
 
     localStorage.setItem(this.storageKey, JSON.stringify(data));
+    this.syncAuthServiceCurrentUser(data);
   }
 
   getStoredAccountData(): StoredAccountData | null {
     return this.accountDataSubject.value;
+  }
+
+  private syncAuthServiceCurrentUser(data: StoredAccountData | null): void {
+    const user: User | null = data
+      ? {
+          _id: data.id,
+          id: data.id,
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          email: data.email || '',
+          mobile: data.mobile,
+          address: data.address,
+          gstNo: data.role?.toLowerCase() === 'admin' ? data.gstNo : undefined,
+          role: (data.role as any) || 'user',
+          access_token: data.access_token,
+        }
+      : null;
+
+    this.authService.setCurrentUser(user);
   }
 
   private loadStoredAccountData(): StoredAccountData | null {

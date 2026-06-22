@@ -15,6 +15,7 @@ export interface User {
   mobile: string;
   role: UserRole;
   address?: string;
+  gstNo?: string;
   password?: string;
   access_token?: string;
 }
@@ -68,6 +69,10 @@ export class AuthService {
 
   public get currentUserValue(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  public setCurrentUser(user: User | null): void {
+    this.currentUserSubject.next(user);
   }
 
   public logout(): void {

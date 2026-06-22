@@ -55,18 +55,27 @@
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="glass-card p-3 rounded-20 border shadow-sm d-flex flex-column h-100 project-card-interactive" 
                                  (click)="openEditProjectModal(project)">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                                     <h6 class="fw-bold text-primary mb-0 text-truncate" [title]="project.projectName">{{ project.projectName }}</h6>
-                                    <span class="badge px-3 py-1 rounded-pill small status-badge-fixed-width"
-                                          [ngClass]="{
-                                              'text-bg-success': project.status === 'completed',
-                                              'text-bg-warning': project.status === 'pending',
-                                              'text-bg-info': project.status === 'in-progress',
-                                              'text-bg-danger': project.status === 'overdue',
-                                              'text-bg-secondary': !['completed', 'pending', 'in-progress', 'overdue'].includes(project.status || '')
-                                          }">
-                                        {{ project.status | titlecase }}
-                                    </span>
+                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon-round text-primary border-0 bg-transparent shadow-none"
+                                            title="Open Invoice"
+                                            (click)="$event.stopPropagation(); openInvoiceDetail(project)">
+                                            <i class="bi bi-receipt fs-5"></i>
+                                        </button>
+                                        <span class="badge px-3 py-1 rounded-pill small status-badge-fixed-width"
+                                              [ngClass]="{
+                                                  'text-bg-success': project.status === 'completed',
+                                                  'text-bg-warning': project.status === 'pending',
+                                                  'text-bg-info': project.status === 'in-progress',
+                                                  'text-bg-danger': project.status === 'overdue',
+                                                  'text-bg-secondary': !['completed', 'pending', 'in-progress', 'overdue'].includes(project.status || '')
+                                              }">
+                                            {{ project.status | titlecase }}
+                                        </span>
+                                    </div>
                                 </div>
                                     <p class="text-text-secondary small mb-1">Due Date: {{ project.dueDate | dueLabel }}</p>
                                 <p class="text-text-muted small mb-0">Created: {{ project.createdAt | date:'short' }}</p>

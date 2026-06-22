@@ -134,6 +134,10 @@
                 <label class="form-label small fw-bold" for="address">Address</label>
                 <input type="text" id="address" name="address" [(ngModel)]="selectedUser.address" class="form-control">
               </div>
+              <div class="col-12" *ngIf="selectedUser.role === 'admin'">
+                <label class="form-label small fw-bold" for="gstNo">GSTIN</label>
+                <input type="text" id="gstNo" name="gstNo" [(ngModel)]="selectedUser.gstNo" class="form-control" placeholder="27AAAPL1234C1ZV">
+              </div>
               <div class="col-12" *ngIf="isAddModalOpen || isEditModalOpen">
                 <label class="form-label small fw-bold" for="password">Password</label>
                 <div class="input-group">

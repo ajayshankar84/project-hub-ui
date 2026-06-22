@@ -81,6 +81,27 @@
                     }
                 </div>
 
+                <!-- Address Input -->
+                <div class="col-12">
+                    <label class="text-label-sm text-text-secondary mb-2 ms-2" for="address">Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-surface-container-low border-0 rounded-start-xl px-3 text-primary">
+                            <i class="bi bi-geo-alt"></i>
+                        </span>
+                        <input type="text" 
+                               id="address" 
+                               formControlName="address" 
+                               class="form-control bg-surface-container-low border-0 rounded-end-xl py-3 shadow-none" 
+                               placeholder="123 Business Lane, City" />
+                    </div>
+                    @if (submitted && f['address'].invalid) {
+                        <div class="text-danger small mt-1 ms-2">
+                            @if (f['address'].errors?.['required']) { Address is required. }
+                            @else { Use at least 5 characters. }
+                        </div>
+                    }
+                </div>
+
                 <!-- Mobile Input -->
                 <div class="col-12">
                     <label class="text-label-sm text-text-secondary mb-2 ms-2" for="mobile">Mobile Number</label>

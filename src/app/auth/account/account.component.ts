@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AccountStateService } from '../../core/services/account-state.service';
+import { AccountStateService, AccountSubmissionPayload } from '../../core/services/account-state.service';
 
 @Component({
   selector: 'app-account',
@@ -30,6 +30,7 @@ export class AccountComponent implements OnInit {
         lastName: ['', [Validators.required, Validators.minLength(2)]],
         email: ['', [Validators.required, Validators.email]],
         mobile: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^[1-9][0-9]{9}$/)]],
+        address: ['', [Validators.required, Validators.minLength(5)]],
         // role: [''],
         password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', [Validators.required]],
@@ -107,7 +108,7 @@ export class AccountComponent implements OnInit {
       return;
     }
 
-    const payload = this.accountForm.value;
+    const payload = this.accountForm.value as AccountSubmissionPayload & { confirmPassword: string };
     const { confirmPassword, ...submitPayload } = payload;
 
     this.isSubmitting = true;
@@ -120,6 +121,7 @@ export class AccountComponent implements OnInit {
           lastName: '',
           email: '',
           mobile: '',
+          address: '',
           role: '',
           password: '',
           confirmPassword: '',

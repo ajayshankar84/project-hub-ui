@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CustomerService } from '../../core/services/customer.service';
+import { ProjectService, Project } from '../../core/services/project.service';
+import { AuthService, User } from '../../core/services/auth.service';
 
 interface InvoiceItem {
   description: string;
@@ -21,9 +23,13 @@ interface InvoiceItem {
 export class InvoiceDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private customerService = inject(CustomerService);
+  private projectService = inject(ProjectService);
+  private authService = inject(AuthService);
 
   isLoading = true;
   invoiceCustomer: any = null;
+  invoiceProject: Project | null = null;
+  fromUser: User | null = null;
   invoiceNumber = 'INV-2026-001';
   invoiceDate = '';
   dueDate = '';
@@ -39,6 +45,9 @@ export class InvoiceDetailsComponent implements OnInit {
     'Payment is due within 15 days from invoice date.',
     'Subject to Mumbai jurisdiction only.'
   ];
+  taxRates = Array.from({ length: 18 }, (_, index) => index + 1);
+  cgstPercent = 9;
+  sgstPercent = 9;
   items: InvoiceItem[] = [
     { description: 'Website development and maintenance', hsn: '998314', qty: 1, rate: 44000 },
     { description: 'Project management support', hsn: '998313', qty: 1, rate: 6000 }
@@ -49,25 +58,70 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   get cgstAmount(): number {
-    return +(this.subTotal * 0.09).toFixed(2);
+    return +(this.subTotal * (this.cgstPercent / 100)).toFixed(2);
   }
 
   get sgstAmount(): number {
-    return +(this.subTotal * 0.09).toFixed(2);
+    return +(this.subTotal * (this.sgstPercent / 100)).toFixed(2);
   }
 
   get totalAmount(): number {
     return +(this.subTotal + this.cgstAmount + this.sgstAmount).toFixed(2);
   }
 
+  getItemAmount(item: InvoiceItem): number {
+    return +(item.qty * item.rate).toFixed(2);
+  }
+
+  addItem(): void {
+    this.items.push({
+      description: '',
+      hsn: '',
+      qty: 1,
+      rate: 0
+    });
+  }
+
+  removeItem(index: number): void {
+    if (this.items.length > 1) {
+      this.items.splice(index, 1);
+    }
+  }
+
   ngOnInit(): void {
-    const routeId = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
-    if (routeId) {
-      this.loadInvoiceForCustomer(routeId);
+    this.fromUser = this.authService.currentUserValue;
+    const customerId = this.route.snapshot.paramMap.get('customerId')
+      || this.route.snapshot.paramMap.get('id')
+      || this.route.parent?.snapshot.paramMap.get('customerId')
+      || this.route.parent?.snapshot.paramMap.get('id');
+    const projectId = this.route.snapshot.paramMap.get('projectId')
+      || this.route.parent?.snapshot.paramMap.get('projectId');
+
+    if (customerId) {
+      this.loadInvoiceForCustomer(customerId, projectId || undefined);
     } else {
       this.setDefaultDates();
       this.isLoading = false;
     }
+  }
+
+  get fromDisplayName(): string {
+    return this.fromUser ? `${this.fromUser.firstName} ${this.fromUser.lastName}` : 'Project Hub Pvt. Ltd.';
+  }
+
+  get fromAddressLines(): string[] {
+    if (this.fromUser?.address) {
+      return [this.fromUser.address];
+    }
+    return ['501, Corporate Avenue', 'Andheri East, Mumbai 400093'];
+  }
+
+  get fromEmail(): string {
+    return this.fromUser?.email ?? 'accounts@projecthub.in';
+  }
+
+  get fromGstNo(): string {
+    return this.fromUser?.gstNo ?? 'Null';
   }
 
   private setDefaultDates(): void {
@@ -78,16 +132,32 @@ export class InvoiceDetailsComponent implements OnInit {
     this.dueDate = due.toLocaleDateString('en-GB');
   }
 
-  private loadInvoiceForCustomer(customerId: string): void {
+  private loadInvoiceForCustomer(customerId: string, projectId?: string): void {
     this.setDefaultDates();
     this.customerService.getCustomerById(customerId).subscribe({
       next: (customer) => {
         this.invoiceCustomer = customer;
-        this.isLoading = false;
+        if (projectId) {
+          this.projectService.getProjectById(projectId).subscribe({
+            next: (project) => {
+              this.invoiceProject = project;
+              this.isLoading = false;
+            },
+            error: (err) => {
+              console.error('Failed to load project for invoice:', err);
+              this.invoiceProject = null;
+              this.isLoading = false;
+            }
+          });
+        } else {
+          this.invoiceProject = null;
+          this.isLoading = false;
+        }
       },
       error: (err) => {
         console.error('Failed to load customer for invoice:', err);
         this.invoiceCustomer = null;
+        this.invoiceProject = null;
         this.isLoading = false;
       }
     });

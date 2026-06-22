@@ -32,7 +32,12 @@ export class CustomerComponent implements OnInit {
     company: '',
     address: '',
     country: 'India',
-    status: 'active'
+    status: 'active',
+    bankName: '',
+    acNo: '',
+    ifscCode: '',
+    branchName: '',
+    gstNo: ''
   };
   insuranceToDelete: any = null;
   filters = {
@@ -186,7 +191,12 @@ export class CustomerComponent implements OnInit {
       company: '',
       address: '',
       country: 'India',
-      status: 'active'
+      status: 'active',
+      bankName: '',
+      acNo: '',
+      ifscCode: '',
+      branchName: '',
+      gstNo: ''
     };
     this.isAddModalOpen = true;
   }
@@ -265,7 +275,14 @@ export class CustomerComponent implements OnInit {
   }
 
   openEditModal(insurance: any): void {
-    this.selectedInsurance = { ...insurance };
+    this.selectedInsurance = {
+      ...insurance,
+      bankName: insurance.bankName ?? '',
+      acNo: insurance.acNo ?? '',
+      ifscCode: insurance.ifscCode ?? '',
+      branchName: insurance.branchName ?? '',
+      gstNo: insurance.gstNo ?? ''
+    };
     this.isEditModalOpen = true;
   }
 
@@ -368,7 +385,12 @@ export class CustomerComponent implements OnInit {
       company: '',
       address: '',
       country: 'India',
-      status: 'active'
+      status: 'active',
+      bankName: '',
+      acNo: '',
+      ifscCode: '',
+      branchName: '',
+      gstNo: ''
     };
   }
 

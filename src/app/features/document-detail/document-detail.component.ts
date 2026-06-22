@@ -337,6 +337,17 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.isEditProjectModalOpen = true;
   }
 
+  openInvoiceDetail(project: Project): void {
+    const customerId = this.customer?._id?.toString();
+    const projectId = project?._id?.toString();
+
+    if (!customerId || !projectId) {
+      return;
+    }
+
+    this.router.navigate(['/features/invoice-detail', customerId, projectId]);
+  }
+
   closeEditProjectModal() {
     this.isEditProjectModalOpen = false;
     this.currentEditingProject = null;
