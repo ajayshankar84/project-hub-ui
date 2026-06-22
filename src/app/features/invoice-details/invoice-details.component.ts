@@ -2,12 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProjectService, Project } from '../../core/services/project.service';
 import { AuthService, User } from '../../core/services/auth.service';
 import { SessionService } from '../../core/services/session.service';
-import { INVOICE_DETAIL_ENDPOINT } from '../../core/config/api.config';
+import { InvoiceService } from '../../core/services/invoice.service';
 
 interface InvoiceItem {
   description: string;
@@ -25,11 +24,11 @@ interface InvoiceItem {
 })
 export class InvoiceDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private http = inject(HttpClient);
   private customerService = inject(CustomerService);
   private projectService = inject(ProjectService);
   private authService = inject(AuthService);
   private sessionService = inject(SessionService);
+  private invoiceService = inject(InvoiceService);
 
   isLoading = true;
   invoiceCustomer: any = null;
@@ -237,7 +236,7 @@ export class InvoiceDetailsComponent implements OnInit {
       notes: this.notes
     };
 
-    this.http.post(INVOICE_DETAIL_ENDPOINT, payload).subscribe({
+    this.invoiceService.createInvoice(payload).subscribe({
       next: (response) => {
         console.log('Invoice saved successfully:', response);
         this.updateInvoiceNumber();

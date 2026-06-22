@@ -1,3 +1,151 @@
-<div class="container py-4">
- 
+<!-- Page Header -->
+<div class="bg-white border-bottom px-4 py-3 mb-4 shadow-sm">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-receipt fs-4 text-primary"></i>
+      <div>
+        <h5 class="mb-0 fw-semibold">Invoices</h5>
+        <small class="text-muted">Filter invoices by company and customer</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid px-4">
+
+  <!-- Filter Card -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white py-3 d-flex align-items-center gap-2">
+      <i class="bi bi-funnel-fill"></i>
+      <span class="fw-semibold">Filter</span>
+    </div>
+    <div class="card-body p-4">
+      <div class="row g-4 align-items-end">
+
+        <!-- Company Select -->
+        <div class="col-md-6">
+          <label for="companySelect" class="form-label fw-semibold text-secondary small text-uppercase mb-1">
+            <i class="bi bi-building me-1"></i>Company
+          </label>
+          <select class="form-select form-select-sm border-0 bg-light" id="companySelect"
+            [(ngModel)]="selectedCompanyId" (ngModelChange)="onCompanyChange($event)">
+            <option value="">-- Select Company --</option>
+            <option *ngFor="let company of companies" [value]="company.cid">
+              {{ company.cname }} (GST: {{ company.gstNo || 'N/A' }})
+            </option>
+          </select>
+          <!-- No companies warning -->
+          <div *ngIf="companies.length === 0" class="form-text text-warning mt-1">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            No companies linked to your account.
+          </div>
+        </div>
+
+        <!-- Customer Select -->
+        <div class="col-md-6">
+          <label for="customerSelect" class="form-label fw-semibold text-secondary small text-uppercase mb-1">
+            <i class="bi bi-person me-1"></i>Customer
+          </label>
+          <div class="position-relative">
+            <select class="form-select form-select-sm border-0 bg-light" id="customerSelect"
+              [(ngModel)]="selectedCustomerId" (ngModelChange)="onCustomerChange($event)"
+              [disabled]="!selectedCompanyId || isLoadingCustomers">
+              <option value="">-- Select Customer --</option>
+              <option *ngFor="let customer of customers" [value]="customer.customerId">
+                {{ customer.name || (customer.firstName ? customer.firstName + ' ' + (customer.lastName || '') : '') }}
+                <ng-container *ngIf="customer.mobile">({{ customer.mobile }})</ng-container>
+              </option>
+            </select>
+            <span *ngIf="isLoadingCustomers" class="position-absolute top-50 end-0 translate-middle-y me-3">
+              <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            </span>
+          </div>
+          <!-- No customers warning -->
+          <div *ngIf="selectedCompanyId && !isLoadingCustomers && customers.length === 0"
+            class="form-text text-warning mt-1">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            No customers found for this company.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoices Table Card -->
+  <div *ngIf="selectedCompanyId && selectedCustomerId" class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-table text-primary"></i>
+        <span class="fw-semibold">Invoice Records</span>
+        <span *ngIf="!isLoadingInvoices && invoices.length > 0"
+          class="badge bg-primary-subtle text-primary rounded-pill ms-1">
+          {{ invoices.length }}
+        </span>
+      </div>
+      <span *ngIf="isLoadingInvoices" class="text-muted small">
+        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+        Loading invoices...
+      </span>
+    </div>
+
+    <div class="card-body p-0">
+
+      <!-- Empty state -->
+      <div *ngIf="!isLoadingInvoices && invoices.length === 0" class="text-center py-5 text-muted">
+        <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary opacity-50"></i>
+        <p class="mb-0 fw-semibold">No invoices found</p>
+        <small>There are no invoices for the selected customer.</small>
+      </div>
+
+      <!-- Table -->
+      <div *ngIf="!isLoadingInvoices && invoices.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light border-bottom">
+            <tr>
+              <th class="ps-4 text-secondary fw-semibold small text-uppercase">#</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Invoice No.</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Invoice Date</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Due Date</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Customer</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Sub Total</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Total Amount</th>
+              <th class="text-secondary fw-semibold small text-uppercase">Place of Supply</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let invoice of invoices; let i = index" class="border-bottom">
+              <td class="ps-4 text-muted">{{ i + 1 }}</td>
+              <td>
+                <span class="badge bg-light text-dark border fw-semibold">
+                  {{ invoice.invoiceNumber || '—' }}
+                </span>
+              </td>
+              <td class="text-muted small">
+                {{ invoice.invoiceDate || '—' }}
+              </td>
+              <td class="text-muted small">
+                {{ invoice.dueDate || '—' }}
+              </td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                    style="width:32px;height:32px;font-size:12px;font-weight:600;">
+                    {{ (invoice.customer?.name || '?').charAt(0).toUpperCase() }}
+                  </div>
+                  <span class="fw-semibold small">{{ invoice.customer?.name || '—' }}</span>
+                </div>
+              </td>
+              <td class="fw-semibold">{{ invoice.subTotal ? '₹' + invoice.subTotal : '—' }}</td>
+              <td class="fw-bold text-primary">{{ invoice.totalAmount ? '₹' + invoice.totalAmount : '—' }}</td>
+              <td class="text-muted small">{{ invoice.placeOfSupply || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
 </div>
