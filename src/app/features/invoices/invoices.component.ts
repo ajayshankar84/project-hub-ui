@@ -43,9 +43,21 @@ interface Invoice {
   notes?: any[];
   items?: any[];
   bankDetails?: any;
-  company?: { cname?: string; gstNo?: string; [key: string]: any };
-  customer?: { name?: string; mobile?: string; [key: string]: any };
-  project?: any;
+  company?: {
+    cname?: string;
+    gstNo?: string;
+    address?: string;
+    mobile?: string;
+    email?: string;
+  };
+  customer?: {
+    name?: string;
+    mobile?: string;
+    email?: string;
+    address?: string;
+    gstNo?: string;
+  };
+  project?: { name?: string; projectName?: string };
 }
 
 @Component({
@@ -73,6 +85,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   // Invoices
   invoices: Invoice[] = [];
   isLoadingInvoices = false;
+  selectedInvoice: Invoice | null = null;
+  isDeletingId: string | null = null;
 
   ngOnInit(): void {
     // Listen for user changes (login/logout/profile update)
@@ -101,6 +115,37 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  /** Open the invoice PDF preview modal. */
+  viewInvoice(invoice: Invoice): void {
+    this.selectedInvoice = invoice;
+  }
+
+  /** Close the invoice PDF preview modal. */
+  closeInvoice(): void {
+    this.selectedInvoice = null;
+  }
+
+  /** Trigger browser print on the invoice preview. */
+  printInvoice(): void {
+    window.print();
+  }
+
+  /** Delete an invoice after confirmation. */
+  deleteInvoice(invoice: Invoice): void {
+    if (!confirm(`Delete invoice ${invoice.invoiceNumber}? This cannot be undone.`)) return;
+    this.isDeletingId = invoice._id;
+    this.invoiceService.deleteInvoice(invoice._id).subscribe({
+      next: () => {
+        this.invoices = this.invoices.filter(inv => inv._id !== invoice._id);
+        this.isDeletingId = null;
+      },
+      error: (err) => {
+        console.error('Failed to delete invoice:', err);
+        this.isDeletingId = null;
+      }
+    });
   }
 
   /**

@@ -22,4 +22,8 @@ export class InvoiceService {
       `${INVOICE_DETAIL_ENDPOINT}/company/${encodeURIComponent(companyName)}/customer/${encodeURIComponent(customerName)}`
     );
   }
+
+  deleteInvoice(id: string): Observable<any> {
+    return this.http.delete(`${INVOICE_DETAIL_ENDPOINT}/${id}`);
+  }
 }

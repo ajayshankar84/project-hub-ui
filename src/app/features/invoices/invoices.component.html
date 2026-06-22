@@ -34,10 +34,8 @@
               {{ company.cname }} (GST: {{ company.gstNo || 'N/A' }})
             </option>
           </select>
-          <!-- No companies warning -->
           <div *ngIf="companies.length === 0" class="form-text text-warning mt-1">
-            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-            No companies linked to your account.
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>No companies linked to your account.
           </div>
         </div>
 
@@ -60,11 +58,9 @@
               <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
             </span>
           </div>
-          <!-- No customers warning -->
           <div *ngIf="selectedCompanyId && !isLoadingCustomers && customers.length === 0"
             class="form-text text-warning mt-1">
-            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-            No customers found for this company.
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>No customers found for this company.
           </div>
         </div>
 
@@ -79,18 +75,14 @@
         <i class="bi bi-table text-primary"></i>
         <span class="fw-semibold">Invoice Records</span>
         <span *ngIf="!isLoadingInvoices && invoices.length > 0"
-          class="badge bg-primary-subtle text-primary rounded-pill ms-1">
-          {{ invoices.length }}
-        </span>
+          class="badge bg-primary-subtle text-primary rounded-pill ms-1">{{ invoices.length }}</span>
       </div>
       <span *ngIf="isLoadingInvoices" class="text-muted small">
-        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-        Loading invoices...
+        <span class="spinner-border spinner-border-sm me-1" role="status"></span>Loading invoices...
       </span>
     </div>
 
     <div class="card-body p-0">
-
       <!-- Empty state -->
       <div *ngIf="!isLoadingInvoices && invoices.length === 0" class="text-center py-5 text-muted">
         <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary opacity-50"></i>
@@ -111,22 +103,17 @@
               <th class="text-secondary fw-semibold small text-uppercase">Sub Total</th>
               <th class="text-secondary fw-semibold small text-uppercase">Total Amount</th>
               <th class="text-secondary fw-semibold small text-uppercase">Place of Supply</th>
+              <th class="text-secondary fw-semibold small text-uppercase text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let invoice of invoices; let i = index" class="border-bottom">
               <td class="ps-4 text-muted">{{ i + 1 }}</td>
               <td>
-                <span class="badge bg-light text-dark border fw-semibold">
-                  {{ invoice.invoiceNumber || '—' }}
-                </span>
+                <span class="badge bg-light text-dark border fw-semibold">{{ invoice.invoiceNumber || '—' }}</span>
               </td>
-              <td class="text-muted small">
-                {{ invoice.invoiceDate || '—' }}
-              </td>
-              <td class="text-muted small">
-                {{ invoice.dueDate || '—' }}
-              </td>
+              <td class="text-muted small">{{ invoice.invoiceDate || '—' }}</td>
+              <td class="text-muted small">{{ invoice.dueDate || '—' }}</td>
               <td>
                 <div class="d-flex align-items-center gap-2">
                   <div
@@ -140,12 +127,218 @@
               <td class="fw-semibold">{{ invoice.subTotal ? '₹' + invoice.subTotal : '—' }}</td>
               <td class="fw-bold text-primary">{{ invoice.totalAmount ? '₹' + invoice.totalAmount : '—' }}</td>
               <td class="text-muted small">{{ invoice.placeOfSupply || '—' }}</td>
+              <td class="text-center">
+                <div class="d-flex gap-2 justify-content-center">
+                  <!-- View PDF -->
+                  <button class="btn btn-sm btn-outline-primary px-2 py-1" title="View Invoice PDF"
+                    (click)="viewInvoice(invoice)">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>View
+                  </button>
+                  <!-- Delete -->
+                  <button class="btn btn-sm btn-outline-danger px-2 py-1" title="Delete Invoice"
+                    [disabled]="isDeletingId === invoice._id" (click)="deleteInvoice(invoice)">
+                    <span *ngIf="isDeletingId === invoice._id" class="spinner-border spinner-border-sm me-1"
+                      role="status"></span>
+                    <i *ngIf="isDeletingId !== invoice._id" class="bi bi-trash me-1"></i>
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 
 </div>
+
+<!-- ===================== INVOICE PDF MODAL ===================== -->
+<div *ngIf="selectedInvoice" class="invoice-overlay" id="invoiceModal">
+  <div class="invoice-modal-wrapper d-print-block">
+
+    <!-- Modal Controls (hidden on print) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 d-print-none">
+      <h6 class="mb-0 fw-bold text-white">
+        <i class="bi bi-file-earmark-pdf me-2"></i>Invoice Preview
+      </h6>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-light" (click)="printInvoice()">
+          <i class="bi bi-printer me-1"></i>Print / Save PDF
+        </button>
+        <button class="btn btn-sm btn-outline-light" (click)="closeInvoice()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== INVOICE DOCUMENT ========== -->
+    <div class="invoice-paper" id="invoicePrint">
+
+      <!-- Header: Company Info -->
+      <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+        <div>
+          <h4 class="fw-bold mb-1 text-primary">{{ selectedInvoice.company?.cname || 'Company Name' }}</h4>
+          <div class="small text-muted">{{ selectedInvoice.company?.address || '' }}</div>
+          <div class="small text-muted">GSTIN: <strong>{{ selectedInvoice.company?.gstNo || 'N/A' }}</strong></div>
+          <div *ngIf="selectedInvoice.company?.mobile" class="small text-muted">
+            Ph: {{ selectedInvoice.company?.mobile }}
+          </div>
+          <div *ngIf="selectedInvoice.company?.email" class="small text-muted">
+            Email: {{ selectedInvoice.company?.email }}
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="invoice-title-badge">TAX INVOICE</div>
+          <table class="table table-sm table-borderless mb-0 mt-2 text-end small">
+            <tr>
+              <td class="text-muted pe-2">Invoice No:</td>
+              <td class="fw-bold">{{ selectedInvoice.invoiceNumber }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted pe-2">Invoice Date:</td>
+              <td>{{ selectedInvoice.invoiceDate || '—' }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted pe-2">Due Date:</td>
+              <td>{{ selectedInvoice.dueDate || '—' }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted pe-2">Place of Supply:</td>
+              <td>{{ selectedInvoice.placeOfSupply || '—' }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bill To -->
+      <div class="row mb-4">
+        <div class="col-6">
+          <div class="section-label">Bill To</div>
+          <div class="fw-semibold">{{ selectedInvoice.customer?.name || '—' }}</div>
+          <div *ngIf="selectedInvoice.customer?.address" class="small text-muted">
+            {{ selectedInvoice.customer?.address }}
+          </div>
+          <div *ngIf="selectedInvoice.customer?.gstNo" class="small text-muted">
+            GSTIN: {{ selectedInvoice.customer?.gstNo }}
+          </div>
+          <div *ngIf="selectedInvoice.customer?.mobile" class="small text-muted">
+            Ph: {{ selectedInvoice.customer?.mobile }}
+          </div>
+          <div *ngIf="selectedInvoice.customer?.email" class="small text-muted">
+            Email: {{ selectedInvoice.customer?.email }}
+          </div>
+        </div>
+        <div class="col-6" *ngIf="selectedInvoice.project">
+          <div class="section-label">Project</div>
+          <div class="fw-semibold">{{ selectedInvoice.project?.name || '—' }}</div>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="mb-4">
+        <div class="section-label mb-2">Items / Services</div>
+        <table class="table table-bordered table-sm align-middle mb-0 invoice-items-table">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>HSN/SAC</th>
+              <th class="text-end">Qty</th>
+              <th class="text-end">Rate (₹)</th>
+              <th class="text-end">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="selectedInvoice.items && selectedInvoice.items.length > 0; else noItems">
+              <tr *ngFor="let item of selectedInvoice.items; let j = index">
+                <td>{{ j + 1 }}</td>
+                <td>{{ item.description || item.name || '—' }}</td>
+                <td>{{ item.hsn || item.sac || '—' }}</td>
+                <td class="text-end">{{ item.quantity || item.qty || '—' }}</td>
+                <td class="text-end">{{ item.rate || item.unitPrice || '—' }}</td>
+                <td class="text-end fw-semibold">{{ item.amount || item.total || '—' }}</td>
+              </tr>
+            </ng-container>
+            <ng-template #noItems>
+              <tr>
+                <td colspan="6" class="text-center text-muted">No items found</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Totals Summary -->
+      <div class="row justify-content-end mb-4">
+        <div class="col-md-5">
+          <table class="table table-sm table-borderless mb-0">
+            <tr>
+              <td class="text-muted">Sub Total</td>
+              <td class="text-end fw-semibold">₹ {{ selectedInvoice.subTotal || '0' }}</td>
+            </tr>
+            <tr *ngIf="selectedInvoice.cgstPercent">
+              <td class="text-muted">CGST ({{ selectedInvoice.cgstPercent }}%)</td>
+              <td class="text-end">₹ {{ selectedInvoice.cgstAmount || '0' }}</td>
+            </tr>
+            <tr *ngIf="selectedInvoice.sgstPercent">
+              <td class="text-muted">SGST ({{ selectedInvoice.sgstPercent }}%)</td>
+              <td class="text-end">₹ {{ selectedInvoice.sgstAmount || '0' }}</td>
+            </tr>
+            <tr class="border-top">
+              <td class="fw-bold">Total Amount</td>
+              <td class="text-end fw-bold fs-5 text-primary">₹ {{ selectedInvoice.totalAmount || '0' }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Amount in Words -->
+      <div *ngIf="selectedInvoice.invoiceString" class="alert alert-light border mb-4 small">
+        <span class="text-muted">Amount in Words: </span>
+        <strong>{{ selectedInvoice.invoiceString }}</strong>
+      </div>
+
+      <!-- Bank Details -->
+      <div *ngIf="selectedInvoice.bankDetails" class="mb-4">
+        <div class="section-label mb-1">Bank Details</div>
+        <div class="small">
+          <div *ngIf="selectedInvoice.bankDetails.bankName">
+            <span class="text-muted">Bank:</span> {{ selectedInvoice.bankDetails.bankName }}
+          </div>
+          <div *ngIf="selectedInvoice.bankDetails.accountNumber">
+            <span class="text-muted">Account No:</span> {{ selectedInvoice.bankDetails.accountNumber }}
+          </div>
+          <div *ngIf="selectedInvoice.bankDetails.ifscCode">
+            <span class="text-muted">IFSC:</span> {{ selectedInvoice.bankDetails.ifscCode }}
+          </div>
+          <div *ngIf="selectedInvoice.bankDetails.branch">
+            <span class="text-muted">Branch:</span> {{ selectedInvoice.bankDetails.branch }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div *ngIf="selectedInvoice.notes && selectedInvoice.notes.length > 0" class="mb-4">
+        <div class="section-label mb-1">Notes / Terms</div>
+        <ul class="small text-muted mb-0 ps-3">
+          <li *ngFor="let note of selectedInvoice.notes">{{ note }}</li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="d-flex justify-content-between align-items-end border-top pt-3 mt-4">
+        <div class="small text-muted">This is a computer-generated invoice and does not require a physical signature.
+        </div>
+        <div class="text-end">
+          <div class="border-top border-dark pt-2 mt-5 px-4 small fw-semibold">
+            Authorised Signatory<br>
+            <span class="fw-normal text-muted">{{ selectedInvoice.company?.cname }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end invoice-paper -->
+  </div>
+</div>
+<!-- ===================== END MODAL ===================== -->

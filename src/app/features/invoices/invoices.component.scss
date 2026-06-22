@@ -1,11 +1,92 @@
-.border-dashed {
-  border-style: dashed !important;
-}
-.border-dashed {
-  border-style: dashed !important;
-}
-
-// Additional custom styles if needed
 .form-select {
   cursor: pointer;
+}
+
+/* ==================== INVOICE PDF OVERLAY ==================== */
+.invoice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1050;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.invoice-modal-wrapper {
+  width: 100%;
+  max-width: 860px;
+}
+
+.invoice-paper {
+  background: #fff;
+  border-radius: 6px;
+  padding: 2.5rem;
+  font-family: 'Arial', sans-serif;
+  font-size: 13px;
+  color: #222;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.invoice-title-badge {
+  display: inline-block;
+  background: #0d6efd;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 4px 16px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #6c757d;
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 2px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.invoice-items-table thead th {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #invoicePrint,
+  #invoicePrint * {
+    visibility: visible;
+  }
+
+  #invoicePrint {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 1.5rem 2rem;
+    box-shadow: none;
+    border-radius: 0;
+    font-size: 12px;
+  }
+
+  .invoice-overlay {
+    background: transparent;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .d-print-none {
+    display: none !important;
+  }
 }
