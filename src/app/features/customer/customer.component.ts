@@ -30,6 +30,7 @@ export class CustomerComponent implements OnInit {
     email: '',
     mobile: '',
     company: '',
+    category: 'Silver',        // default to Silver
     address: '',
     country: 'India',
     status: 'active',
@@ -52,13 +53,10 @@ export class CustomerComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'desc';
   errorMessage: string | null = null;
 
-
-
   toastVisible = false;
   toastMessage = '';
   toastVariant: 'success' | 'danger' = 'success';
   private toastTimer: any;
-
 
   constructor(
     private customerService: CustomerService,
@@ -76,7 +74,6 @@ export class CustomerComponent implements OnInit {
     this.errorMessage = null;
     this.customerService.getPagedCustomer(this.currentPage, this.pageSize, this.searchTerm, this.sortField, this.sortDirection, this.filters).subscribe({
       next: (response: any) => {
-        // Assuming response format: { content: Insurance[], totalElements: number }
         this.insurances = response.data || [];
         this.totalElements = response.total || 0;
         this.isLoading = false;
@@ -89,12 +86,10 @@ export class CustomerComponent implements OnInit {
     });
   }
 
-  // Calculate total pages based on records / page size
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.totalElements / this.pageSize));
   }
 
-  // Generate the array of page numbers to display
   get pages(): (number | string)[] {
     const total = this.totalPages;
     const current = this.currentPage;
@@ -132,11 +127,7 @@ export class CustomerComponent implements OnInit {
 
   onSearch(): void {
     const isInvalid = (val: string) => val.length > 0 && val.length < 3;
-
-    // Check global search and text filters for the 3-character threshold.
-    // We exclude 'status' from this check as it is a dropdown selection.
     const textFilters = [this.searchTerm, this.filters.name, this.filters.company, this.filters.mobile, this.filters.email, this.filters.country];
-
     if (textFilters.some(isInvalid)) {
       return;
     }
@@ -189,6 +180,7 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
+      category: 'Silver',        // reset to Silver
       address: '',
       country: 'India',
       status: 'active',
@@ -207,22 +199,19 @@ export class CustomerComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    // Ensure company is set to 'individual' when empty
     if (!this.newCustomer.company) {
       this.newCustomer.company = 'Individual';
     }
-    // Ensure country defaults to India when empty
     if (!this.newCustomer.country) {
       this.newCustomer.country = 'India';
     }
+    // Category is already set, no extra action needed.
 
     this.customerService.createCustomer(this.newCustomer).subscribe({
       next: (res: any) => {
-        // Try to obtain the created customer's id from common response shapes
         const createdCustomer = res?.data || res;
         const createdId = createdCustomer?._id || createdCustomer?.id || (createdCustomer && typeof createdCustomer === 'string' ? createdCustomer : null);
 
-        // Build a user payload from the customer data
         const [firstName, ...lastNameParts] = (this.newCustomer.name || '').trim().split(' ');
         const lastName = lastNameParts.join(' ') || 'Customer';
         const userPayload: User = {
@@ -281,7 +270,8 @@ export class CustomerComponent implements OnInit {
       acNo: insurance.acNo ?? '',
       ifscCode: insurance.ifscCode ?? '',
       branchName: insurance.branchName ?? '',
-      gstNo: insurance.gstNo ?? ''
+      gstNo: insurance.gstNo ?? '',
+      category: insurance.category ?? 'Silver'   // fallback to Silver if missing
     };
     this.isEditModalOpen = true;
   }
@@ -294,23 +284,21 @@ export class CustomerComponent implements OnInit {
   saveInsurance(): void {
     if (this.selectedInsurance) {
       this.isLoading = true;
-      // Ensure company is set to 'individual' when empty
       if (!this.selectedInsurance.company) {
         this.selectedInsurance.company = 'individual';
       }
-      // Ensure country defaults to India when empty
       if (!this.selectedInsurance.country) {
         this.selectedInsurance.country = 'India';
       }
+      // Category is already present, no extra action needed.
 
       this.customerService.updateCustomer(this.selectedInsurance._id, this.selectedInsurance).subscribe({
         next: () => {
-          
           this.closeEditModal();
           this.showToast('Customer record updated successfully', 'success');
           setTimeout(() => {
-             this.loadInsurances();
-          },2000)
+            this.loadInsurances();
+          }, 2000);
         },
         error: (err: any) => {
           console.error('Error updating insurance:', err);
@@ -383,6 +371,7 @@ export class CustomerComponent implements OnInit {
       email: '',
       mobile: '',
       company: '',
+      category: 'Silver',
       address: '',
       country: 'India',
       status: 'active',
@@ -405,5 +394,4 @@ export class CustomerComponent implements OnInit {
       this.router.navigate(['/features/document-detail', customer._id]);
     }
   }
-
 }

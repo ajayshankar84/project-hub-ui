@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProjectService, Project } from '../../core/services/project.service';
 import { AuthService, User } from '../../core/services/auth.service';
@@ -24,6 +24,7 @@ interface InvoiceItem {
 })
 export class InvoiceDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private customerService = inject(CustomerService);
   private projectService = inject(ProjectService);
   private authService = inject(AuthService);
@@ -240,6 +241,7 @@ export class InvoiceDetailsComponent implements OnInit {
       next: (response) => {
         console.log('Invoice saved successfully:', response);
         this.updateInvoiceNumber();
+        this.router.navigate(['/features/invoices']);
       },
       error: (error) => console.error('Failed to save invoice:', error)
     });

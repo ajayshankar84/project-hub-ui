@@ -171,7 +171,7 @@
                         }
                     } @else if (insurances.length === 0 && !errorMessage) {
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <i class="bi bi-inbox fs-2 d-block mb-2"></i>
                             No insurance records found.
                         </td>
@@ -180,7 +180,18 @@
                     @for (customer of insurances; track customer.email) {
                     <tr class="border-bottom border-light hover-row" (click)="viewDocument(customer)" style="cursor: pointer;">
                         <td class="fw-bold py-3">
-                            {{ customer.name }}
+                            <div>{{ customer.name }}</div>
+                            <div class="small mt-1">
+                                <span class="badge rounded-pill px-2 py-1"
+                                      [ngClass]="{
+                                        'bg-info': (customer.category || 'Silver') === 'Golden',
+                                        'bg-success': (customer.category || 'Silver') === 'Silver',
+                                        'bg-warning text-dark': (customer.category || 'Silver') === 'Platinum',
+                                        'bg-danger': (customer.category || 'Silver') === 'Diamond'
+                                      }">
+                                    {{ customer.category || 'Silver' }}
+                                </span>
+                            </div>
                         </td>
                         <td>{{ customer.company }}</td>
                         <td>{{ customer.mobile }}</td>
@@ -199,9 +210,9 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill me-1" (click)="$event.stopPropagation(); openInvoiceDetail(customer)" title="Invoice Details">
+                                <!-- <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill me-1" (click)="$event.stopPropagation(); openInvoiceDetail(customer)" title="Invoice Details">
                                     <i class="bi bi-receipt"></i>
-                                </button>
+                                </button> -->
                                 <button type="button" class="btn btn-sm btn-outline-primary rounded-pill me-1" (click)="$event.stopPropagation(); openEditModal(customer)" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </button>
@@ -292,6 +303,16 @@
                     <div class="col-12">
                         <label class="form-label small fw-bold text-muted">Company</label>
                         <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="selectedInsurance.company">
+                    </div>
+                    <!-- Category Dropdown -->
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-muted">Category</label>
+                        <select class="form-select bg-light border-0 rounded-3" [(ngModel)]="selectedInsurance.category">
+                            <option value="Silver">Silver</option>
+                            <option value="Golden">Golden</option>
+                            <option value="Diamond">Diamond</option>
+                            <option value="Platinum">Platinum</option>
+                        </select>
                     </div>
                     <div class="col-12">
                         <label class="form-label small fw-bold text-muted">Address</label>
@@ -393,6 +414,16 @@
                     <div class="col-12">
                         <label class="form-label small fw-bold text-muted">Company </label>
                         <input type="text" class="form-control bg-light border-0 rounded-3" [(ngModel)]="newCustomer.company">
+                    </div>
+                    <!-- Category Dropdown -->
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-muted">Category</label>
+                        <select class="form-select bg-light border-0 rounded-3" [(ngModel)]="newCustomer.category">
+                            <option value="Silver">Silver</option>
+                            <option value="Golden">Golden</option>
+                            <option value="Diamond">Diamond</option>
+                            <option value="Platinum">Platinum</option>
+                        </select>
                     </div>
                     <div class="col-12">
                         <label class="form-label small fw-bold text-muted">Address</label>
